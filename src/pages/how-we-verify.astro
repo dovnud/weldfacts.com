@@ -1,6 +1,5 @@
 ---
 import Base from '../layouts/Base.astro';
-import Byline from '../components/Byline.astro';
 import Crumbs from '../components/Crumbs.astro';
 import { SITE } from '../lib/site';
 import { crumbLd, webPageLd } from '../lib/ld';
@@ -13,8 +12,7 @@ const jsonld = [webPageLd('How we verify welder specs', '/how-we-verify/', desc,
   <div class="wrap prose">
     <div class="pagehead">
       <Crumbs crumbs={crumbs} />
-      <h1>How we verify</h1>
-      <Byline />
+      <h1>How specs are checked</h1>
     </div>
     <p>A number is a fact only when the manufacturer page or that maker's manual states it. The row links the URL. 2 November 2026 is the read date.</p>
     <h2>Sources</h2>

@@ -1,8 +1,8 @@
 ---
 import Base from '../layouts/Base.astro';
-import Byline from '../components/Byline.astro';
 import Crumbs from '../components/Crumbs.astro';
 import { AMAZON_DISCLOSURE, AMAZON_TAG, ASINS } from '../config/affiliate';
+import { models } from '../data/models';
 import { SITE } from '../lib/site';
 import { crumbLd, webPageLd } from '../lib/ld';
 
@@ -16,11 +16,21 @@ const verified = Object.keys(ASINS).length;
     <div class="pagehead">
       <Crumbs crumbs={crumbs} />
       <h1>Affiliate disclosure</h1>
-      <Byline />
     </div>
     <p>{AMAZON_DISCLOSURE}</p>
-    <p>Amazon is the only affiliate program here. No ad network. Every Amazon link is built in one file. Tag <span class="mono">{AMAZON_TAG}</span>.</p>
-    <p>{verified === 0 ? 'No live Amazon title has been checked. Every button is a tagged search.' : `${verified} models use a direct link. The rest are searches.`}</p>
-    <p>No prices. A missing spec is not filled from a retailer page.</p>
+    <p>That sentence is the program disclosure. WeldFacts takes part in the Amazon Associates Program. If you follow an Amazon link and buy something, Amazon may pay WeldFacts a commission. You do not pay a higher price because the link is tagged. The commission is paid by Amazon under its associates terms.</p>
+    <h2>Where the links are</h2>
+    <p>Amazon is the only affiliate program on this site. There is no display ad network, no sponsored ranking, and no other retailer tag. Every Amazon URL is built in one configuration file. The tag is <span class="mono">{AMAZON_TAG}</span>. Pages do not paste the tag by hand. Model pages show one link. Comparison pages do not add a second store button. {models.length} models are in the index.</p>
+    <p>{verified === 0
+      ? 'No live Amazon title has been checked against a single model. Every button is a tagged search. A search result is not a verified product match, and a result that covers several machines is not treated as the model on the page.'
+      : `${verified} models use a direct product link after the live Amazon title was checked. The rest are searches.`}</p>
+    <h2>What a direct link would require</h2>
+    <p>A /dp/ link is allowed only after the amazon.com page is opened and the title names that one model. The ASIN, the title that was on the page, and the date of the check are stored next to the tag. A listing that names several models is not used. Until that check exists for a slug, the button stays a search for the model name.</p>
+    <h2>What the links do not change</h2>
+    <p>The tag does not choose which welders are transcribed, how the 120 V and 240 V lists are sorted, or how a comparison verdict is written. Sort order on the outlet lists is the mild-steel thickness the manufacturer printed. A verdict uses published process, voltage, thickness, weight, and circuit checks. It does not use a commission rate.</p>
+    <p>Specs are not taken from Amazon, from a marketplace seller, or from a review. A missing cell stays "Not published by manufacturer." No price, coupon, or star rating is shown next to a link. The note under the button repeats the associates disclosure and says whether the link is a search or a checked product page.</p>
+    <h2>How the link is marked</h2>
+    <p>Amazon links use rel="sponsored nofollow noopener" and open in a new tab. Sponsored marks the commercial relationship. Nofollow asks crawlers not to treat the link as an endorsement of the destination. This site does not control Amazon’s pages after the click, and Amazon may set its own cookies there.</p>
+    <p>Questions about a link or a spec go to <a href={`mailto:${SITE.email}`}>{SITE.email}</a>. There is no other email address on the site.</p>
   </div>
 </Base>

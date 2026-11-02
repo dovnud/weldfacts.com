@@ -1,12 +1,12 @@
 ---
 import Base from '../layouts/Base.astro';
-import Byline from '../components/Byline.astro';
 import Crumbs from '../components/Crumbs.astro';
+import { brands, models } from '../data/models';
 import { SITE } from '../lib/site';
 import { crumbLd, orgLd, webPageLd } from '../lib/ld';
 
 const crumbs = [{ name: 'About', path: '/about/' }];
-const desc = 'WeldFacts.com is an independent reference for manufacturer welder specs and an outlet check. Pages are by the WeldFacts editorial team.';
+const desc = 'WeldFacts.com publishes manufacturer welder specifications and an outlet check. No personal byline. Contact contact@weldfacts.com.';
 const jsonld = [
   webPageLd('About WeldFacts.com', '/about/', desc, SITE.checked),
   crumbLd(crumbs),
@@ -18,18 +18,20 @@ const jsonld = [
   <div class="wrap prose">
     <div class="pagehead">
       <Crumbs crumbs={crumbs} />
-      <h1>About</h1>
-      <Byline />
+      <h1>About WeldFacts.com</h1>
     </div>
-    <p>WeldFacts prints welder specs from manufacturer pages and manuals. The outlet chip and the job check use those numbers.</p>
-    <h2>Who</h2>
-    <p>Published by WeldFacts. The byline is the WeldFacts editorial team. No personal name on a transcription. Judge the source link.</p>
-    <h2>The date</h2>
-    <p>Checked 2 November 2026 means that is when the cited pages were read. A layout change does not move the date.</p>
+    <p>WeldFacts.com is a reference for welder specifications copied from manufacturer product pages, spec sheets, and owner’s manuals. The site currently transcribes {models.length} models from {brands().length} brands: {brands().map((b) => b.name).join(', ')}. Each model page repeats the published process, output, duty cycle, input, wire or rod, weight, and thickness, and links the page those words came from.</p>
+    <h2>What a page will and will not say</h2>
+    <p>If the cited page states a number, the cell states that number. If it does not, the cell says "Not published by manufacturer." The job check and the outlet chips use the same stored figures. They do not estimate amps from a similar model, convert a gauge into inches, or turn a single-pass note into a multi-pass maximum.</p>
+    <p>Model pages also explain those figures: which jobs the thickness and process lines support, what the input row means on a 120 V / 15 A outlet and a 240 V / 50 A outlet, what a printed duty percent means in minutes of a 10-minute test, which sentences name an included part, and a verdict that stops at the published fields. Comparison pages do that work only when the two machines share a brand or share a process. Other pairs are noindex.</p>
+    <h2>Publisher</h2>
+    <p>The publisher is WeldFacts. Pages do not carry a personal byline. There is no staff list and no author email other than {SITE.email}. Judge a spec by the source link on the row, not by a name.</p>
+    <h2>Checked date</h2>
+    <p>2 November 2026 is the date the cited manufacturer pages were read. A layout change on this site does not move that date. If a maker revises a spec sheet, the transcription is updated and the date moves with the new read. The footer states the date once. The method is on <a href="/how-we-verify/">How we verify</a>.</p>
     <h2>Money</h2>
-    <p>Free to read. Amazon tag weldfacts-20. The tag does not change a spec. See the <a href="/affiliate-disclosure/">affiliate disclosure</a>.</p>
-    <h2>Not this</h2>
-    <p>Not a dealer. Not a shop. Not an electrical inspection. The manual that ships with the machine still governs setup.</p>
-    <p><a href={`mailto:${SITE.email}`}>{SITE.email}</a></p>
+    <p>The site is free to read. There is no display advertising and no subscriber list. Amazon links use tag weldfacts-20. The tag does not change a spec, a sort order, or which models are included. A model is here because a manufacturer page was transcribed, not because a retailer stocks it. See the <a href="/affiliate-disclosure/">affiliate disclosure</a>. No prices are shown.</p>
+    <h2>Limits</h2>
+    <p>WeldFacts is not a dealer, a repair shop, or an electrical inspection. A pass on the job check is a comparison with published numbers. It does not confirm the breaker in the wall, the condition of a cord, or the setup in the manual that shipped with the machine. Product names are used to identify machines and belong to their owners.</p>
+    <p>Corrections go to <a href={`mailto:${SITE.email}`}>{SITE.email}</a>. Include the model, the figure, and the manufacturer URL. The <a href="/contact/">contact page</a> explains what to send and does not store the message on this site.</p>
   </div>
 </Base>

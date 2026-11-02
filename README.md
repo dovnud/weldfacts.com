@@ -4,6 +4,8 @@ Manufacturer-sourced welder specifications and an outlet-and-job check. Astro 5,
 
 Specs are transcribed from manufacturer product pages, spec sheets, and owner’s manuals. A field the maker does not publish is shown as “Not published by manufacturer.” The read date on the pages is 2 November 2026.
 
+Model pages add jobs, power, duty cycle, included items, and a verdict from those fields. A comparison is indexed when the two machines share a brand or a published process. Other pairs stay on the compare form, use `noindex`, and are left out of the sitemap and `llms.txt`.
+
 ```bash
 nvm use
 npm install

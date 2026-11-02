@@ -1,24 +1,35 @@
 ---
 import Base from '../../layouts/Base.astro';
-import Byline from '../../components/Byline.astro';
 import Crumbs from '../../components/Crumbs.astro';
 import MachineTable from '../../components/MachineTable.astro';
-import { models } from '../../data/models';
+import { brands, models, modelPath } from '../../data/models';
 import { SITE } from '../../lib/site';
 import { crumbLd, webPageLd } from '../../lib/ld';
 
 const crumbs = [{ name: 'Models', path: '/models/' }];
 const desc = 'Welder spec index for Lincoln Electric, Miller, Hobart, ESAB, PrimeWeld, and Harbor Freight. Every number cites the manufacturer page.';
 const jsonld = [webPageLd('Welder models', '/models/', desc, SITE.checked), crumbLd(crumbs)];
+const grouped = brands().map((brand) => ({
+  brand,
+  list: models.filter((m) => m.brandSlug === brand.slug),
+}));
 ---
 <Base title="Welder models and specs" description={desc} path="/models/" nav="models" og="/og/page-models.png" jsonld={jsonld}>
   <div class="wrap">
     <div class="pagehead">
       <Crumbs crumbs={crumbs} />
-      <h1>{models.length} models</h1>
-      <p class="lede">Same fields on every row. Sort the headers. The outlet chip filters the body.</p>
-      <Byline />
+      <h1>Welder models</h1>
+      <p class="lede">The same fields are transcribed for every model: process, output, duty cycle, input, wire or rod, weight, and thickness. Sort a column header. The outlet chip hides a machine that fails the selected circuit and leaves warnings on the table.</p>
+      <p>A model page adds the jobs those figures support, what the input row means for a 15 A or 50 A breaker, the duty percent as minutes of a 10-minute test, any sentence that names an included part, and a verdict that stops where the sheet stops. Prices are not listed. Amazon links on model pages are searches.</p>
     </div>
     <MachineTable rows={models} />
+    {grouped.map(({ brand, list }) => (
+      <section class="prose">
+        <h2><a href={`/brands/${brand.slug}/`}>{brand.name}</a></h2>
+        {list.map((m) => (
+          <p><a href={modelPath(m)}>{m.name}</a>. {m.summary} Input: {m.input.text}</p>
+        ))}
+      </section>
+    ))}
   </div>
 </Base>

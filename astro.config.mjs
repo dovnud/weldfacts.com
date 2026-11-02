@@ -6,6 +6,7 @@ import { readFileSync } from 'node:fs';
 // from the date each manufacturer page was read. A path missing from the file
 // is left without <lastmod> rather than given a made-up date.
 const lastmodByPath = JSON.parse(readFileSync('./src/data/page-dates.json', 'utf8'));
+const noindexPaths = new Set(JSON.parse(readFileSync('./src/data/noindex-paths.json', 'utf8')));
 
 const MONEY = new Set([
   '/compare/best-for-120v/',
@@ -54,7 +55,10 @@ export default defineConfig({
   compressHTML: true,
   integrations: [
     sitemap({
-      filter: (page) => new URL(page).pathname !== '/404/',
+      filter: (page) => {
+        const path = new URL(page).pathname;
+        return path !== '/404/' && !noindexPaths.has(path);
+      },
       serialize(item) {
         const path = new URL(item.url).pathname;
         if (lastmodByPath[path]) item.lastmod = new Date(`${lastmodByPath[path]}T00:00:00Z`).toISOString();

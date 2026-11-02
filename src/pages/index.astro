@@ -1,16 +1,15 @@
 ---
 import Base from '../layouts/Base.astro';
-import Byline from '../components/Byline.astro';
 import JobForm from '../components/JobForm.astro';
 import MachineTable from '../components/MachineTable.astro';
 import { models, brands } from '../data/models';
 import { SITE } from '../lib/site';
 import { crumbLd, webPageLd, websiteLd } from '../lib/ld';
 
-const desc = '31 welders. Amp range, duty cycle, input, and thickness copied from the manufacturer sheet. Filter by 120V/15A or 240V/50A.';
+const desc = 'Welder amp range, duty cycle, input, and thickness copied from the manufacturer sheet. Filter by a 120 V / 15 A or 240 V / 50 A outlet.';
 const jsonld = [
   websiteLd(desc),
-  webPageLd('Welder specs and which machine fits the outlet', '/', desc, SITE.checked),
+  webPageLd('Welder specs and which one fits your outlet', '/', desc, SITE.checked),
   crumbLd([]),
   {
     '@type': 'ItemList',
@@ -18,15 +17,19 @@ const jsonld = [
     itemListElement: models.map((m, i) => ({ '@type': 'ListItem', position: i + 1, name: m.name, url: SITE.url + `/models/${m.slug}/` })),
   },
 ];
+const brandLine = brands()
+  .map((b) => `${b.name} (${b.count})`)
+  .join(', ');
 ---
-<Base title="Welder specs and which machine fits" description={desc} path="/" nav="home" og="/og/default.png" jsonld={jsonld}>
+<Base title="Welder specs and which one fits your outlet" description={desc} path="/" nav="home" og="/og/default.png" jsonld={jsonld}>
   <div class="wrap pagehead">
-    <p class="kicker">Read 2 November 2026 · {models.length} models · {brands().length} brands</p>
-    <h1>Sheet. Outlet. Job.</h1>
-    <p class="lede">Numbers come from the maker. A blank stays blank. The chip is 120V/15A or 240V/50A. A machine that fails that outlet drops off the table.</p>
-    <Byline />
+    <h1>Welder specs and which one fits your outlet</h1>
+    <p class="lede">Each row is a welder whose amp range, duty cycle, input, and thickness were copied from the manufacturer page or manual. If that page does not print a figure, the cell says "Not published by manufacturer."</p>
+    <p>The chips are a 120 V / 15 A household outlet and a 240 V / 50 A outlet. A machine that fails the selected outlet drops off the table. A warning stays visible: the published draw is under that breaker, and the sheet did not name a breaker size. Input current at rated output is not treated as a recommended breaker.</p>
+    <p>The job check asks for outlet, breaker, metal, thickness, and process, then compares those entries with the same cited fields. It runs in the browser. Nothing you type is sent to this site. Brands in the index: {brandLine}.</p>
     <JobForm />
     <h2>Spec index</h2>
     <MachineTable rows={models} />
+    <p>Open a model for the jobs the sheet supports, the power it asks for, the duty cycle in minutes, any inclusion line the maker printed, and a verdict limited to those figures. Comparisons that share a brand or a process are written the same way. Pairs with no shared process and different brands stay available from the compare form and are marked noindex.</p>
   </div>
 </Base>

@@ -1,6 +1,5 @@
 ---
 import Base from '../../layouts/Base.astro';
-import Byline from '../../components/Byline.astro';
 import Crumbs from '../../components/Crumbs.astro';
 import { models, modelPath } from '../../data/models';
 import { fitTokens } from '../../lib/plate';
@@ -25,13 +24,14 @@ const jsonld = [
   <div class="wrap">
     <div class="pagehead">
       <Crumbs crumbs={crumbs} />
-      <h1>Three processes, named</h1>
-      <p class="lede">MIG and flux-cored count as two. A third named process gets the row. Order is the count, then the name.</p>
-      <Byline />
+      <h1>Multi-process welders</h1>
+      <p class="lede">A model is on this list when the cited page names at least three processes. MIG and flux-cored count as two. Stick or TIG has to be named as well, or some other third process the sheet prints. Order is the count of named processes, then the model name. {ranked.length} models meet the cutoff. The list is not a quality ranking.</p>
+      <p>Naming a process is not a thickness and not a circuit size. Several machines on this list publish a lower amp range, a lower duty point, or no thickness at all for stick or TIG. Read the model page before treating "multi-process" as equal output on every process. AC TIG is called out only when the sheet publishes it. DC TIG that never names aluminum fails an aluminum job on the checker.</p>
+      <p>Input class in the last column is the voltage the sheet lists, mapped the same way as the chips: 110 V to 120 V as 120 V, and 208 V to 240 V as 240 V. 460 V and 575 V are not given their own chip. The outlet chip still hides a fail against 120 V / 15 A or 240 V / 50 A. A machine can name four processes and still fail the breaker you have.</p>
     </div>
     <div class="tblwrap">
       <table>
-        <thead><tr><th>#</th><th>Model</th><th>Processes named</th><th>Input class</th></tr></thead>
+        <thead><tr><th>#</th><th>Model</th><th>Processes named</th><th>Input class</th><th>What the sheet says about output</th></tr></thead>
         <tbody>
           {ranked.map((m, i) => (
             <tr data-fit={fitTokens(m) || 'none'}>
@@ -39,10 +39,12 @@ const jsonld = [
               <td><a href={modelPath(m)}>{m.name}</a></td>
               <td>{m.procs.map((p) => labels[p]).join(', ')}</td>
               <td class="mono">{m.voltages.map((v) => `${v} V`).join(' / ')}</td>
+              <td>{m.output.published ? m.output.text : 'Not published'}</td>
             </tr>
           ))}
         </tbody>
       </table>
     </div>
+    <p>Compare two of these on <a href="/compare/">the pair page</a>, or run them through the <a href="/which-welder/">outlet check</a> with one process at a time. A pass on MIG does not carry over to TIG.</p>
   </div>
 </Base>

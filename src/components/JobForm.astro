@@ -11,7 +11,7 @@ const thicknesses = [
 ];
 ---
 <form class="finder" id="job-form">
-  <div class="finder-head">Job check <span>Uses the outlet chip</span></div>
+  <div class="finder-head">Outlet and job <span>Runs in this browser</span></div>
   <div class="finder-body">
     <div class="f-grid">
       <div>
@@ -57,7 +57,7 @@ const thicknesses = [
         </select>
       </div>
     </div>
-    <button class="f-btn" type="submit">Run the sheet</button>
+    <button class="f-btn" type="submit">Check this job</button>
   </div>
 </form>
 <div id="job-out" hidden></div>
@@ -92,7 +92,8 @@ const thicknesses = [
         if (!list.length) return `<h2>${title}</h2><p>None.</p>`;
         return `<h2>${title}</h2>` + list.map((m) => {
           const result = evaluateJob(m, input);
-          const checks = result.checks.map((ch) => `<div class="check-row"><div class="pill ${ch.status}">${ch.status}</div><div><strong>${ch.title}</strong><p>${ch.detail}</p></div></div>`).join('');
+          const statusLabel: Record<string, string> = { pass: 'Pass', warn: 'Warning', fail: 'Fail', na: 'Not scored' };
+          const checks = result.checks.map((ch) => `<div class="check-row"><div class="pill ${ch.status}">${statusLabel[ch.status] || ch.status}</div><div><strong>${ch.title}</strong><p>${ch.detail}</p></div></div>`).join('');
           return `<article><h3><a href="${modelPath(m)}">${m.name}</a></h3><p>${result.headline}</p>${checks}</article>`;
         }).join('');
       };

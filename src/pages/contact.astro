@@ -1,6 +1,5 @@
 ---
 import Base from '../layouts/Base.astro';
-import Byline from '../components/Byline.astro';
 import Crumbs from '../components/Crumbs.astro';
 import { SITE } from '../lib/site';
 import { crumbLd, webPageLd } from '../lib/ld';
@@ -14,17 +13,25 @@ const jsonld = [webPageLd('Contact WeldFacts.com', '/contact/', desc, SITE.check
     <div class="pagehead">
       <Crumbs crumbs={crumbs} />
       <h1>Contact</h1>
-      <p class="lede">Send the model, the figure, and the manufacturer URL.</p>
-      <Byline />
+    </div>
+    <div class="prose">
+      <p>The only address for this site is <a href={`mailto:${SITE.email}`}>{SITE.email}</a>. There is no phone number, no personal mailbox, and no account to sign in to. Use that address for a spec correction, a broken source link, or a question about an Amazon link.</p>
+      <h2>What a correction should include</h2>
+      <p>Name the model as it appears on the model page, including the SKU when the sheet prints one. Name the field: process, output, duty cycle, input, wire or rod, weight, or thickness. Quote the figure you believe the manufacturer published, and paste the manufacturer URL where that figure appears. A page number or a heading on a PDF helps. A forum post, a retailer listing, or a memory of an older revision is not enough to change a cell.</p>
+      <p>If two official files disagree, say so and send both URLs. Harbor Freight item 57862 has two manuals with different input-current figures. This site cites one of them and says which file in the model notes. A correction can ask for the citation to move, and it should point at the file.</p>
+      <h2>What this page does with the form</h2>
+      <p>The form uses a mailto action. Submitting it opens your email app with a message addressed to {SITE.email}. The browser does not post the text to a WeldFacts server. This site has no database for messages, no newsletter signup, and no account system. If your email app does not open, write to the address above yourself.</p>
+      <p>Do not send passwords, payment card numbers, or order numbers. WeldFacts does not sell machines and cannot see an Amazon order. A commission, if one is paid, is handled by Amazon and is not something this inbox can look up.</p>
+      <p>There is no promised reply window. A correction that includes the model, the figure, and the manufacturer URL can be checked against that page. The checked date in the footer moves when the cited pages are read again. The method for that read is on <a href="/how-we-verify/">How we verify</a>.</p>
     </div>
     <form class="stack" action={`mailto:${SITE.email}`} method="post" enctype="text/plain">
       <label for="cName">Name</label>
       <input id="cName" name="name" type="text" autocomplete="name" />
-      <label for="cEmail">Email</label>
+      <label for="cEmail">Your email</label>
       <input id="cEmail" name="email" type="email" autocomplete="email" />
       <label for="cMsg">Message</label>
       <textarea id="cMsg" name="message" rows="6"></textarea>
-      <button class="primary" type="submit">Open mail</button>
+      <button class="primary" type="submit">Open email</button>
       <p class="small muted">Opens a message to {SITE.email}. This page stores nothing.</p>
     </form>
   </div>

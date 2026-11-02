@@ -18,7 +18,9 @@ function setOutlet(id: string) {
     const rows = [...document.querySelectorAll<HTMLElement>('tr[data-fit]')];
     const shown = rows.filter((row) => !row.hidden && row.offsetParent !== null).length;
     const visible = rows.filter((row) => (row.dataset.fit || '').split(/\s+/).includes(id)).length;
-    el.textContent = `${visible} of ${rows.length}`;
+    const total = Number(el.dataset.total || rows.length);
+    const label = id === '240-50' ? '240 V, 50 A' : '120 V, 15 A';
+    el.textContent = `${visible} of ${total} models on this list stay visible for a ${label} outlet. The chip hides a fail.`;
     void shown;
   });
   const form = document.getElementById('job-form') as HTMLFormElement | null;

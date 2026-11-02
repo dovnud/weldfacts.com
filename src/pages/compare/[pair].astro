@@ -1,8 +1,9 @@
 ---
 import Base from '../../layouts/Base.astro';
-import Byline from '../../components/Byline.astro';
 import Crumbs from '../../components/Crumbs.astro';
+import Guide from '../../components/Guide.astro';
 import { pairs, modelPath } from '../../data/models';
+import { pairIsUseful, pairSections } from '../../lib/guide';
 import { specRows } from '../../lib/modelView';
 import { SITE } from '../../lib/site';
 import { crumbLd, webPageLd } from '../../lib/ld';
@@ -13,7 +14,11 @@ export function getStaticPaths() {
 const { pair } = Astro.props;
 const path = `/compare/${pair.slug}/`;
 const crumbs = [{ name: 'Compare', path: '/compare/' }, { name: `${pair.a.name} vs ${pair.b.name}`, path }];
-const desc = `${pair.a.name} vs ${pair.b.name}. Same spec fields, each value cited to the manufacturer page that printed it.`;
+const useful = pairIsUseful(pair.a, pair.b);
+const sections = useful ? pairSections(pair.a, pair.b) : [];
+const desc = useful
+  ? `${pair.a.name} vs ${pair.b.name}: jobs, power, duty cycle, included items, and a verdict from the manufacturer fields.`
+  : `${pair.a.name} and ${pair.b.name} do not share a published process. This pair is not an indexed comparison.`;
 const rowsA = specRows(pair.a);
 const rowsB = specRows(pair.b);
 const jsonld = [
@@ -23,16 +28,40 @@ const jsonld = [
     '@type': 'ItemList',
     itemListElement: [pair.a, pair.b].map((m, i) => ({ '@type': 'ListItem', position: i + 1, name: m.name, url: SITE.url + modelPath(m) })),
   },
+  ...(useful
+    ? [{
+        '@type': 'FAQPage',
+        mainEntity: sections.map((section) => ({
+          '@type': 'Question',
+          name: section.heading,
+          acceptedAnswer: { '@type': 'Answer', text: section.paragraphs.join(' ') },
+        })),
+      }]
+    : []),
 ];
 ---
-<Base title={`${pair.a.name} vs ${pair.b.name}`} description={desc} path={path} nav="compare" og="/og/page-compare.png" jsonld={jsonld}>
+<Base title={`${pair.a.name} vs ${pair.b.name}`} description={desc} path={path} nav="compare" og="/og/page-compare.png" jsonld={jsonld} noindex={!useful}>
   <div class="wrap">
     <div class="pagehead">
       <Crumbs crumbs={crumbs} />
       <h1>{pair.a.name} vs {pair.b.name}</h1>
-      <p class="lede">Same fields. Each cell is that model's published text. A blank stays "Not published by manufacturer." The outlet chip does not hide either column.</p>
-      <Byline />
+      {useful ? (
+        <p class="lede">Same fields from each manufacturer page. A blank stays "Not published by manufacturer." The outlet chip does not hide either column.</p>
+      ) : (
+        <p class="lede">{pair.a.name} and {pair.b.name} are different brands, and the cited pages do not name a shared process. This URL is not a buying guide. It is noindex and is left out of the sitemap. Read each model page for jobs, power, duty cycle, and a verdict.</p>
+      )}
     </div>
+    {useful && <Guide sections={sections} />}
+    {!useful && (
+      <p>
+        <a href={modelPath(pair.a)}>{pair.a.name}</a>
+        {' · '}
+        <a href={modelPath(pair.b)}>{pair.b.name}</a>
+        {' · '}
+        <a href="/compare/">All comparisons</a>
+      </p>
+    )}
+    <h2>Specifications side by side</h2>
     <div class="tblwrap">
       <table>
         <thead>

@@ -48,7 +48,8 @@ function mentions(clause: string, voltage: Volt): boolean {
 }
 
 function anyVoltage(clause: string): boolean {
-  return /\b\d{2,3}\s*V/i.test(clause);
+  // Input class only. "19 V" and "24 VDC" in a rating are arc voltage, not the outlet.
+  return /\b(110|115|120|208|220|230|240|460|575)\s*V/i.test(clause);
 }
 
 /** First published duty percent for this outlet, read from the duty sentence. No new number. */
@@ -84,7 +85,7 @@ export function plugLine(input: string): string {
 
 export const PROC_LABEL: Record<string, string> = {
   mig: 'MIG',
-  flux: 'FCAW',
-  stick: 'STICK',
+  flux: 'Flux',
+  stick: 'Stick',
   tig: 'TIG',
 };

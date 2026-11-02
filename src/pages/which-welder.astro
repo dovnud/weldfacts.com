@@ -1,30 +1,33 @@
 ---
 import Base from '../layouts/Base.astro';
-import Byline from '../components/Byline.astro';
 import Crumbs from '../components/Crumbs.astro';
 import JobForm from '../components/JobForm.astro';
 import FaqList from '../components/FaqList.astro';
+import { getModel } from '../data/models';
 import { SITE } from '../lib/site';
 import { crumbLd, webPageLd } from '../lib/ld';
 
 const crumbs = [{ name: 'Check', path: '/which-welder/' }];
 const desc = 'Match a 120 V or 240 V outlet, breaker size, metal, thickness, and process to published welder ratings. Missing figures are not filled in.';
+const sample = ['millermatic-142', 'handler-210i', 'multimatic-235', 'maxstar-161-sth', 'dynasty-210', 'power-mig-260']
+  .map((slug) => getModel(slug))
+  .filter((m) => m != null);
 const faqs = [
   {
     q: 'Does a 230 V rating count as a 240 V outlet?',
-    a: 'Yes. 208-240 V, 230 V, and 240 V match the 240 V chip. 460 V and 575 V match neither chip. 110 V, 115 V, and 120 V match the 120 V chip.',
+    a: 'Yes. 208-240 V, 230 V, and 240 V match the 240 V choice. 460 V and 575 V match neither choice. 110 V, 115 V, and 120 V match the 120 V choice. The result says when that mapping is used. The amps printed for the row still have to fit the breaker you enter.',
   },
   {
     q: 'Is input current the breaker size?',
-    a: 'No. Input current at rated output is a draw. A draw above the breaker fails. A draw that fits, with no breaker size on the sheet, is a warning. A pass needs a breaker size the maker printed, such as the Handler 210i 15 A and 20 A rows.',
+    a: 'No. Input current at rated output is a draw. A draw above the breaker fails. A draw that fits, with no breaker size on the sheet, is a warning. A pass needs a breaker size the maker printed. The Handler 210i sheet has 15 A and 20 A rows, so a 15 A job can pass when the current on that row also fits. The Millermatic 142 input cell names 20 A, so a 15 A breaker fails.',
   },
   {
     q: 'What if thickness is a single-pass figure?',
-    a: 'If the page says single pass and does not print a multi-pass maximum, a thicker job is a warning. If the page prints a maximum and does not call it single pass, a thicker job fails.',
+    a: 'If the page says single pass and does not print a multi-pass maximum, a thicker job is a warning. If the page prints a maximum and does not call it single pass, a thicker job fails. Gauge is not converted to inches. A thickness the sheet never states is not scored as a pass.',
   },
   {
     q: 'Why can aluminum fail on a TIG welder?',
-    a: 'Aluminum passes only when the cited page names aluminum. DC TIG that does not name aluminum fails that metal.',
+    a: 'Aluminum passes only when the cited page names aluminum. DC TIG that does not name aluminum fails that metal. The Maxstar 161 STH does not name aluminum, so an aluminum TIG job fails. The Dynasty 210 names aluminum, so that material check can pass. Other unnamed metals are left unscored.',
   },
 ];
 const jsonld = [
@@ -33,23 +36,26 @@ const jsonld = [
   { '@type': 'FAQPage', mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) },
 ];
 ---
-<Base title="Which welder for this outlet" description={desc} path="/which-welder/" nav="job" og="/og/page-which-welder.png" jsonld={jsonld}>
+<Base title="Which welder fits this outlet" description={desc} path="/which-welder/" nav="job" og="/og/page-which-welder.png" jsonld={jsonld}>
   <div class="wrap">
     <div class="pagehead">
       <Crumbs crumbs={crumbs} />
-      <h1>Job check</h1>
-      <p class="lede">Outlet, breaker, metal, thickness, process. Pass means the sheet printed the number. Partial means a figure is missing or only partly covers the outlet.</p>
-      <Byline />
+      <h1>Which welder fits this outlet</h1>
+      <p class="lede">Enter the outlet, the breaker, the metal, the thickness, and the process. A pass means the cited sheet printed a figure that covers the job. A partial result means a figure is missing or the sheet only partly covers the outlet. A fail means a published figure conflicts with what you entered. Missing figures are not filled in.</p>
     </div>
     <JobForm />
-    <h2>Rules</h2>
-    <ul class="rule-list">
-      <li>230 V and 208-240 V count as the 240 V outlet. The result says when that mapping is used.</li>
-      <li>A named breaker row is a pass only when the input current on that row also fits.</li>
-      <li>Input amps with no breaker size: under the breaker is a warning, over it is a fail.</li>
-      <li>Process has to be named. Aluminum on TIG needs the word aluminum on the page.</li>
-      <li>Thickness uses a printed inch maximum. Gauge is not converted.</li>
-    </ul>
-    <FaqList items={faqs} />
+    <div class="prose">
+      <h2>What each check uses</h2>
+      <p>Voltage has to be on the model. The Multimatic 235 publishes a 240 V class input and does not publish 120 V, so a 120 V job fails before thickness is considered. The Power MIG 260 is the same kind of case: its input cell is not a 120 V machine, and its published 230 V draw does not fit a 50 A breaker.</p>
+      <p>The circuit check reads breaker rows, fuse maximums, and input current that were stored from the sheet. It does not look up a receptacle in a code book, and it does not know what is in your panel. Type the breaker size you are asking about. A pass does not prove the breaker in the wall is the size you typed.</p>
+      <p>Process has to be named on the model. Flux-cored and MIG are separate names when the sheet lists both. Thickness uses an inch maximum stored from the sheet. The Millermatic 142 steel figure is a single-pass 3/16 in on 120 V, so 1/4 in is a warning rather than a hard fail. The Thunderbolt 210 MV publishes a lower 120 V stick maximum than its 240 V maximum, and those two numbers are not swapped.</p>
+      <p>The check runs in the browser. The numbers stay on this page. Results link to the model page, where the source URL sits on each row.</p>
+      <h2>Input cells for the examples above</h2>
+      {sample.map((m) => m && (
+        <p><a href={`/models/${m.slug}/`}>{m.name}</a>: {m.input.text}</p>
+      ))}
+      <h2>Questions</h2>
+      <FaqList items={faqs} />
+    </div>
   </div>
 </Base>

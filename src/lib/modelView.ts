@@ -1,5 +1,6 @@
 import type { Model } from '../data/models';
 import { modelPath } from '../data/models';
+import { modelSections } from './guide';
 import { SITE } from './site';
 
 export function specRows(m: Model) {
@@ -14,32 +15,11 @@ export function specRows(m: Model) {
   ];
 }
 
-const PROC: Record<string, string> = {
-  mig: 'MIG',
-  flux: 'flux-cored',
-  stick: 'stick',
-  tig: 'TIG',
-};
-
 export function modelFaqs(m: Model) {
-  return [
-    {
-      q: `What output does the ${m.name} publish?`,
-      a: m.output.published ? `${m.output.text} Source: ${m.output.cite.url}` : `Output is not published on the page we checked: ${m.output.cite.url}`,
-    },
-    {
-      q: `What duty cycle does the ${m.name} publish?`,
-      a: m.duty.published ? `${m.duty.text} Source: ${m.duty.cite.url}` : 'Duty cycle is not published on the page we checked.',
-    },
-    {
-      q: `What input does the ${m.name} publish?`,
-      a: m.input.published ? m.input.text : 'Input voltage is not published on the page we checked.',
-    },
-    {
-      q: `Which processes does the ${m.name} publish?`,
-      a: m.procs.map((p) => PROC[p]).join(', ') + '.',
-    },
-  ];
+  return modelSections(m).map((section) => ({
+    q: section.heading,
+    a: section.paragraphs.join(' '),
+  }));
 }
 
 export function productLd(m: Model) {

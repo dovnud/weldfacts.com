@@ -9,17 +9,14 @@
   "scripts": {
     "dev": "astro dev",
     "prebuild": "node --experimental-strip-types scripts/check-specs.mjs && node --experimental-strip-types scripts/gen-og.mjs",
-    "build": "astro build",
+    "build": "astro build && node scripts/check-words.mjs",
     "preview": "astro preview",
     "og": "node --experimental-strip-types scripts/gen-og.mjs",
     "indexnow": "node scripts/indexnow.mjs",
-    "test": "node --experimental-strip-types scripts/job.test.mjs"
+    "test": "node --experimental-strip-types scripts/job.test.mjs && node --experimental-strip-types scripts/guide.test.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
-    "@fontsource/barlow": "^5.2.8",
-    "@fontsource/barlow-condensed": "^5.2.8",
-    "@fontsource/ibm-plex-mono": "^5.2.7",
     "astro": "^5.18.2"
   },
   "devDependencies": {

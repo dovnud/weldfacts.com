@@ -1,25 +1,42 @@
 ---
 import Base from '../../layouts/Base.astro';
-import Byline from '../../components/Byline.astro';
 import Crumbs from '../../components/Crumbs.astro';
-import { models } from '../../data/models';
+import { brands, models, pairs } from '../../data/models';
+import { pairIsUseful } from '../../lib/guide';
 import { SITE } from '../../lib/site';
 import { crumbLd, webPageLd } from '../../lib/ld';
 
 const crumbs = [{ name: 'Compare', path: '/compare/' }];
-const desc = 'Compare two welders on the manufacturer figures only. 120 V, 240 V, and multi-process lists use those same figures.';
+const all = pairs();
+const useful = all.filter((pair) => pairIsUseful(pair.a, pair.b));
+const desc = 'Compare two welders on manufacturer figures: jobs, power, duty cycle, included items, and a verdict. Pairs with no shared process are not indexed.';
 const jsonld = [webPageLd('Compare welder specs', '/compare/', desc, SITE.checked), crumbLd(crumbs)];
+const sameBrand = brands()
+  .map((brand) => {
+    const list = models.filter((m) => m.brandSlug === brand.slug);
+    const links: { href: string; label: string }[] = [];
+    for (let i = 0; i < list.length; i++) {
+      for (let j = i + 1; j < list.length; j++) {
+        links.push({
+          href: `/compare/${list[i].slug}-vs-${list[j].slug}/`,
+          label: `${list[i].name} vs ${list[j].name}`,
+        });
+      }
+    }
+    return { brand, links };
+  })
+  .filter((group) => group.links.length);
 ---
 <Base title="Compare welder specs" description={desc} path="/compare/" nav="compare" og="/og/page-compare.png" jsonld={jsonld}>
   <div class="wrap">
     <div class="pagehead">
       <Crumbs crumbs={crumbs} />
-      <h1>Two sheets</h1>
-      <p class="lede">Same fields, two citations. No score.</p>
-      <Byline />
+      <h1>Compare two welders</h1>
+      <p class="lede">Pick two models. The page lines up the same spec fields and, when a comparison can be made from those fields, writes the jobs, power, duty cycle, included items, and a verdict.</p>
+      <p>A comparison is indexed when the two machines share a brand or share a published process. {useful.length} pairs meet that test. {all.length - useful.length} pairs are different brands with no shared process. The form still opens them, they stay noindex, and they are left out of the sitemap. A missing figure on one machine is not copied from the other.</p>
     </div>
     <form class="finder" id="pair-form">
-      <div class="finder-head">Pair <span>Order follows the model list</span></div>
+      <div class="finder-head">Choose two models <span>Order follows the model list</span></div>
       <div class="finder-body">
         <div class="f-grid">
           <div>
@@ -31,14 +48,27 @@ const jsonld = [webPageLd('Compare welder specs', '/compare/', desc, SITE.checke
             <select id="b" name="b">{models.map((m, i) => <option value={m.slug} selected={i === 1}>{m.name}</option>)}</select>
           </div>
         </div>
-        <button class="f-btn" type="submit">Open</button>
+        <button class="f-btn" type="submit">Open comparison</button>
       </div>
     </form>
-    <ul class="rule-list">
-      <li><a href="/compare/best-for-120v/">120 V list</a></li>
-      <li><a href="/compare/best-for-240v/">240 V list</a></li>
-      <li><a href="/compare/best-multiprocess/">Multi-process list</a></li>
+    <h2>Lists by outlet and process</h2>
+    <ul>
+      <li><a href="/compare/best-for-120v/">Welders for a 120 V outlet</a>, ordered by the mild-steel thickness the manufacturer printed for that voltage.</li>
+      <li><a href="/compare/best-for-240v/">Welders for a 240 V outlet</a>, the same ordering for 208-240 V, 230 V, and 240 V inputs.</li>
+      <li><a href="/compare/best-multiprocess/">Multi-process welders</a>, models whose cited page names at least three processes.</li>
     </ul>
+    <div class="pair-groups">
+      <h2>Same-brand comparisons</h2>
+      <p>These pairs share a brand, so the sheets can be read as a line even when the processes differ. Cross-brand pairs that share a process are in the sitemap under the same URL pattern.</p>
+      {sameBrand.map((group) => (
+        <section>
+          <h3>{group.brand.name}</h3>
+          <ul>
+            {group.links.map((link) => <li><a href={link.href}>{link.label}</a></li>)}
+          </ul>
+        </section>
+      ))}
+    </div>
   </div>
 </Base>
 <script>

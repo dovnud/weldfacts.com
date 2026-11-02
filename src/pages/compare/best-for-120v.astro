@@ -1,6 +1,5 @@
 ---
 import Base from '../../layouts/Base.astro';
-import Byline from '../../components/Byline.astro';
 import Crumbs from '../../components/Crumbs.astro';
 import { models, modelPath, steelMax } from '../../data/models';
 import { fitTokens } from '../../lib/plate';
@@ -19,6 +18,7 @@ const ranked = models
 const path = '/compare/best-for-120v/';
 const crumbs = [{ name: 'Compare', path: '/compare/' }, { name: '120 V', path }];
 const desc = 'Welders with a published 120 V input, ranked by the mild-steel thickness the manufacturer printed for that voltage.';
+const withThick = ranked.filter((row) => row.thick != null).length;
 const jsonld = [
   webPageLd('Welders for a 120 V outlet', path, desc, SITE.checked),
   crumbLd(crumbs),
@@ -29,9 +29,10 @@ const jsonld = [
   <div class="wrap">
     <div class="pagehead">
       <Crumbs crumbs={crumbs} />
-      <h1>120 V on the sheet</h1>
-      <p class="lede">Machines whose input line includes 120 V. Thickest published mild steel first. No thickness number sorts last. The chip still drops a 15 A fail.</p>
-      <Byline />
+      <h1>Welders for a 120 V outlet</h1>
+      <p class="lede">Machines whose published input includes 110 V, 115 V, or 120 V. The order is the mild-steel thickness stored from that sheet for 120 V, thickest first. {withThick} of {ranked.length} rows have that thickness figure. A sheet with no inch maximum sorts last, by name. This is not a quality ranking and it is not a price ranking.</p>
+      <p>A 120 V listing is not a promise that the machine fits a 15 A breaker. The chip on this page still hides a fail against 120 V / 15 A. A pass needs a breaker size the maker printed. A draw that fits, with no breaker named, stays visible as a warning. Input current at rated output is the draw, not a recommended breaker. Where the sheet calls a thickness single pass and does not print a multi-pass maximum, a thicker job is a warning on the job check.</p>
+      <p>Duty-cycle text in the last column is the manufacturer sentence, not a score. Read the amperage next to the percent. Two machines can show different percents because they were rated at different outputs. Open the model page for that percent turned into minutes of a 10-minute test, and for the power and verdict notes.</p>
     </div>
     <div class="tblwrap">
       <table>
@@ -48,6 +49,6 @@ const jsonld = [
         </tbody>
       </table>
     </div>
-    <p class="small muted">Use the <a href="/which-welder/">outlet check</a> when you know the breaker size. Input current at rated output is not the same thing as a recommended breaker.</p>
+    <p>Use the <a href="/which-welder/">outlet check</a> when you know the breaker size. For a 240 V class circuit, use the <a href="/compare/best-for-240v/">240 V list</a>.</p>
   </div>
 </Base>

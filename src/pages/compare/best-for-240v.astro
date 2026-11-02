@@ -1,6 +1,5 @@
 ---
 import Base from '../../layouts/Base.astro';
-import Byline from '../../components/Byline.astro';
 import Crumbs from '../../components/Crumbs.astro';
 import { models, modelPath, steelMax } from '../../data/models';
 import { fitTokens } from '../../lib/plate';
@@ -19,6 +18,7 @@ const ranked = models
 const path = '/compare/best-for-240v/';
 const crumbs = [{ name: 'Compare', path: '/compare/' }, { name: '240 V', path }];
 const desc = 'Welders with a published 230 V or 240 V class input, ranked by the mild-steel thickness the manufacturer printed.';
+const withThick = ranked.filter((row) => row.thick != null).length;
 const jsonld = [
   webPageLd('Welders for a 240 V outlet', path, desc, SITE.checked),
   crumbLd(crumbs),
@@ -29,9 +29,10 @@ const jsonld = [
   <div class="wrap">
     <div class="pagehead">
       <Crumbs crumbs={crumbs} />
-      <h1>240 V class on the sheet</h1>
-      <p class="lede">208-240 V, 230 V, or 240 V. 460 V and 575 V stay off. Thickest published mild steel first. The 50 A chip drops a draw above 50 A.</p>
-      <Byline />
+      <h1>Welders for a 240 V outlet</h1>
+      <p class="lede">Machines whose published input includes 208-240 V, 230 V, or 240 V. 460 V and 575 V do not put a machine on this list by themselves. The order is the mild-steel thickness stored for that voltage class, thickest first. {withThick} of {ranked.length} rows have that figure. A sheet with no inch maximum sorts last. This is not a quality ranking and it is not a price ranking.</p>
+      <p>The chip still hides a machine whose published draw fails a 240 V / 50 A outlet. Fitting under 50 A without a named breaker is a warning, and the row stays visible. A printed breaker that fits, with the input current also under that breaker, is a pass. Do not read a 230 V rating as a different outlet from the 240 V choice on the job check. The check states that mapping and still uses the amps the sheet printed.</p>
+      <p>The duty column quotes the manufacturer sentence. Percents at different amperages are not one ladder. Open the model for the first percent turned into minutes on a 10-minute test, for what the sheet says is included, and for the verdict. Single-pass wording stays attached to the model that used it. A thicker job than a single-pass figure is a warning when the same source prints no multi-pass maximum.</p>
     </div>
     <div class="tblwrap">
       <table>
@@ -48,5 +49,6 @@ const jsonld = [
         </tbody>
       </table>
     </div>
+    <p>Use the <a href="/which-welder/">outlet check</a> with the breaker size on the panel. For a household outlet, use the <a href="/compare/best-for-120v/">120 V list</a>.</p>
   </div>
 </Base>

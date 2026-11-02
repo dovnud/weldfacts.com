@@ -1,6 +1,5 @@
 ---
 import Base from '../layouts/Base.astro';
-import Byline from '../components/Byline.astro';
 import Crumbs from '../components/Crumbs.astro';
 import { SITE } from '../lib/site';
 import { crumbLd, webPageLd } from '../lib/ld';
@@ -13,13 +12,19 @@ const jsonld = [webPageLd('Terms of use', '/terms/', desc, SITE.checked), crumbL
   <div class="wrap prose">
     <div class="pagehead">
       <Crumbs crumbs={crumbs} />
-      <h1>Terms</h1>
-      <Byline />
+      <h1>Terms of use</h1>
     </div>
-    <p>The tables are transcriptions as of the checked date. Makers change products. Read the manual that comes with the machine.</p>
-    <p>The job check compares your numbers with published numbers. It is not an electrical inspection. A pass does not prove the breaker in the wall is the size you typed.</p>
-    <p>Product names identify machines. They belong to their owners. This site is not those companies and not Amazon.</p>
-    <p>Amazon links use tag weldfacts-20. See the <a href="/affiliate-disclosure/">affiliate disclosure</a>.</p>
-    <p><a href={`mailto:${SITE.email}`}>{SITE.email}</a></p>
+    <p>These terms cover use of weldfacts.com. Reading a page means you accept them. If you do not, do not use the site. The publisher is WeldFacts. The contact address is <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.</p>
+    <h2>Specifications are transcriptions</h2>
+    <p>Tables and the notes around them are transcriptions of manufacturer pages, spec sheets, and manuals as of the checked date in the footer. Manufacturers change products, rename SKUs, and replace PDFs. A cell can be wrong because the source changed or because a transcription missed a line. The source link is there so you can read the file that was cited. The manual and the data plate that ship with your machine govern setup, not this website.</p>
+    <h2>The job check is not an inspection</h2>
+    <p>The job check compares numbers you type with numbers stored from those sheets. It is not an electrical inspection, a code calculation, or welding instruction. A pass does not prove the breaker in the wall is the size you typed, that the receptacle is wired correctly, or that a cord and a procedure are safe for the job. A warning means the sheet only partly covers the question. A blank means the manufacturer page used here did not state the field. Do not treat a blank as a zero or as permission.</p>
+    <h2>Names and independence</h2>
+    <p>Lincoln Electric, Miller, Hobart, ESAB, Everlast, YesWelder, Forney, Eastwood, Harbor Freight, PrimeWeld, Amazon, and the model names on these pages are used to identify machines and sellers. They belong to their owners. WeldFacts is not those companies and is not an authorized dealer. Nothing on the site is a joint offer with them.</p>
+    <h2>Affiliate links</h2>
+    <p>Some model pages link to Amazon with tag weldfacts-20. The <a href="/affiliate-disclosure/">affiliate disclosure</a> explains the commission. A link is a search until a live Amazon title is checked. The site does not show prices and does not take orders. Your purchase, if you make one, is with Amazon or another seller, under their terms.</p>
+    <h2>No warranty</h2>
+    <p>The site is provided as a reference. WeldFacts does not warrant that a transcription is complete, current, or fit for a particular weld or a particular building circuit. To the extent the law allows, WeldFacts is not liable for lost work, damaged equipment, or injury that results from relying on a page instead of the manufacturer’s manual and a qualified person. Some jurisdictions do not allow certain limitations. In those places, the limitation applies as far as the law allows.</p>
+    <p>You may link to public pages. You may not copy the site into another product and present the tables as your own measurements. Corrections are welcome at the contact address and are described on the <a href="/contact/">contact page</a>.</p>
   </div>
 </Base>

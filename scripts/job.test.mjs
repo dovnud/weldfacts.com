@@ -60,6 +60,12 @@ if (status('handler-125', { voltage: 120, breakerA: 20, material: 'mild-steel', 
   throw new Error('Handler 125 draws 21.3 A');
 }
 
+const mm142duty = getModel('millermatic-142');
+const d142 = dutyMark(mm142duty.duty.text, 120, mm142duty.voltages);
+if (d142?.percent !== 60 || d142?.amps !== '100' || d142?.split) {
+  throw new Error('142 duty is 60% at 100 A and does not name an outlet; 19 V is arc voltage');
+}
+
 const m211 = getModel('millermatic-211-pro');
 const d120 = dutyMark(m211.duty.text, 120, m211.voltages);
 const d240 = dutyMark(m211.duty.text, 240, m211.voltages);

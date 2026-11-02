@@ -12,17 +12,17 @@ const plug = plugLine(m.input.text);
 <section class="nameplate" aria-label={`${m.name} rating plate`}>
   <div class="np-top">
     <p class="np-brand">{m.brand}</p>
-    <p class="np-sku">{m.sku ? m.sku : 'NO SKU ON SHEET'}</p>
+    <p class="np-sku">{m.sku ? `SKU ${m.sku}` : 'No SKU on the sheet'}</p>
   </div>
-  <h2 style="margin:0 0 10px">{m.name}</h2>
+  <p class="np-name">{m.name}</p>
   <div class="np-grid">
     <div class="np-cell"><span>Output</span><b>{m.output.published ? m.output.text : 'Not published'}</b></div>
     <div class="np-cell"><span>Duty</span><b>{m.duty.published ? m.duty.text : 'Not published'}</b></div>
     <div class="np-cell"><span>Input</span><b>{m.input.published ? m.input.text : 'Not published'}</b></div>
     <div class="np-cell"><span>Plug</span><b>{plug}</b></div>
   </div>
-  {m.voltages.includes(120) && <DutyBar mark={d120} outlet="120-15" label="10 min cycle, 120V" />}
-  {m.voltages.includes(240) && <DutyBar mark={d240} outlet="240-50" label="10 min cycle, 240V class" />}
-  {!fit.includes('120-15') && <p class="stamp" data-miss="120-15">Does not pass 120V/15A</p>}
-  {!fit.includes('240-50') && <p class="stamp" data-miss="240-50">Does not pass 240V/50A</p>}
+  {m.voltages.includes(120) && <DutyBar mark={d120} outlet="120-15" label="10-minute cycle at 120 V" />}
+  {m.voltages.includes(240) && <DutyBar mark={d240} outlet="240-50" label="10-minute cycle at 240 V" />}
+  {!fit.includes('120-15') && <p class="stamp" data-miss="120-15">Does not pass 120 V / 15 A</p>}
+  {!fit.includes('240-50') && <p class="stamp" data-miss="240-50">Does not pass 240 V / 50 A</p>}
 </section>

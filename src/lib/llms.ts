@@ -1,4 +1,5 @@
 import { models, modelPath, pairs, brands } from '../data/models';
+import { pairIsUseful } from './guide';
 import { specRows } from './modelView';
 import { SITE, abs } from './site';
 
@@ -26,7 +27,7 @@ export function llmsTxt(): string {
     `- [120 V outlets](${abs('/compare/best-for-120v/')}): models with a published 120 V input, ranked by published mild-steel thickness.`,
     `- [240 V outlets](${abs('/compare/best-for-240v/')}): models with a published 240 V class input, ranked by published mild-steel thickness.`,
     `- [Multi-process](${abs('/compare/best-multiprocess/')}): models whose cited page names three or more processes.`,
-    `- [Compare](${abs('/compare/')}): one page per model pair at /compare/{first}-vs-{second}/.`,
+    `- [Compare](${abs('/compare/')}): indexed pairs share a brand or a published process, at /compare/{first}-vs-{second}/. Other pairs are noindex and omitted below.`,
     '',
     '## About this site',
     '',
@@ -58,8 +59,11 @@ export function llmsFull(): string {
     }
     lines.push('');
   }
+  const indexed = pairs().filter((p) => pairIsUseful(p.a, p.b));
+  const omitted = pairs().length - indexed.length;
   lines.push('## Comparison URLs', '');
-  for (const p of pairs()) lines.push(`- ${abs(`/compare/${p.slug}/`)}: ${p.a.name} vs ${p.b.name}`);
+  lines.push(`Indexed comparisons: ${indexed.length}. ${omitted} pairs are noindex because the models are different brands and share no published process. Those URLs are omitted here and omitted from the sitemap.`, '');
+  for (const p of indexed) lines.push(`- ${abs(`/compare/${p.slug}/`)}: ${p.a.name} vs ${p.b.name}`);
   lines.push('');
   return lines.join('\n');
 }

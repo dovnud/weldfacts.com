@@ -1,7 +1,5 @@
 ---
 import type { Field } from '../data/models';
-import { CHECKED } from '../data/models';
-import { checkedLabel } from '../lib/seo';
 interface Row { label: string; field: Field }
 interface Props { rows: Row[] }
 const { rows } = Astro.props;
@@ -9,7 +7,7 @@ const { rows } = Astro.props;
 <div class="tblwrap">
   <table>
     <thead>
-      <tr><th>Spec</th><th>Published value</th><th>Source, checked {checkedLabel(CHECKED)}</th></tr>
+      <tr><th>Spec</th><th>Published value</th><th>Source</th></tr>
     </thead>
     <tbody>
       {rows.map((row) => (

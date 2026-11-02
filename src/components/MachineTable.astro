@@ -5,10 +5,10 @@ import { PROC_LABEL, dutyMark, fitTokens, outletCircuit } from '../lib/plate';
 interface Props { rows: Model[] }
 const { rows } = Astro.props;
 const shown120 = rows.filter((m) => fitTokens(m).split(/\s+/).includes('120-15')).length;
+const statusLabel: Record<string, string> = { pass: 'Pass', warn: 'Warning', fail: 'Fail', na: 'Not scored' };
 ---
 <div class="sheet-tools">
-  <p class="count" data-live-count>{shown120} of {rows.length}</p>
-  <p class="small muted">Outlet chip hides a fail. Warn and unpublished input stay.</p>
+  <p class="outlet-note" data-live-count data-total={rows.length}>{shown120} of {rows.length} models on this list stay visible for a 120 V, 15 A outlet. The chip hides a fail.</p>
 </div>
 <div class="tblwrap">
   <table class="sheet sortable">
@@ -50,8 +50,8 @@ const shown120 = rows.filter((m) => fitTokens(m).split(/\s+/).includes('120-15')
               <span data-for="240-50" title={d240?.clause ?? ''}>{d240 ? `${d240.percent}%` : 'n/p'}</span>
             </td>
             <td>
-              <span class={`pill ${s120}`} data-for="120-15">{s120}</span>
-              <span class={`pill ${s240}`} data-for="240-50">{s240}</span>
+              <span class={`pill ${s120}`} data-for="120-15">{statusLabel[s120]}</span>
+              <span class={`pill ${s240}`} data-for="240-50">{statusLabel[s240]}</span>
             </td>
           </tr>
         );

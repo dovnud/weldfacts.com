@@ -1,5 +1,6 @@
 import { writeFileSync } from 'node:fs';
 import { models, pairs, brands, CHECKED } from '../src/data/models.ts';
+import { pairIsUseful } from '../src/lib/guide.ts';
 import { AMAZON_TAG, ASINS, amazonProductUrl, amazonSearchUrl, linkFor } from '../src/config/affiliate.ts';
 
 const errors = [];
@@ -63,6 +64,9 @@ for (const m of models) dates[`/models/${m.slug}/`] = CHECKED;
 for (const b of brands()) dates[`/brands/${b.slug}/`] = CHECKED;
 for (const p of pairs()) dates[`/compare/${p.slug}/`] = CHECKED;
 writeFileSync('src/data/page-dates.json', JSON.stringify(dates, null, 2) + '\n');
+
+const noindex = pairs().filter((p) => !pairIsUseful(p.a, p.b)).map((p) => `/compare/${p.slug}/`);
+writeFileSync('src/data/noindex-paths.json', JSON.stringify(noindex, null, 2) + '\n');
 
 if (errors.length) {
   console.error(errors.join('\n'));

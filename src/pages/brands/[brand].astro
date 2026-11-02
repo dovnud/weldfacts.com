@@ -1,12 +1,12 @@
 ---
 import Base from '../../layouts/Base.astro';
-import Byline from '../../components/Byline.astro';
 import Crumbs from '../../components/Crumbs.astro';
+import Guide from '../../components/Guide.astro';
 import MachineTable from '../../components/MachineTable.astro';
 import { brands, models, modelPath } from '../../data/models';
+import { brandSections } from '../../lib/guide';
 import { SITE } from '../../lib/site';
 import { crumbLd, webPageLd } from '../../lib/ld';
-import { checkedLabel } from '../../lib/seo';
 
 export function getStaticPaths() {
   return brands().map((b) => ({ params: { brand: b.slug }, props: { brand: b } }));
@@ -15,21 +15,30 @@ const { brand } = Astro.props;
 const list = models.filter((m) => m.brandSlug === brand.slug);
 const path = `/brands/${brand.slug}/`;
 const crumbs = [{ name: brand.name, path }];
+const sections = brandSections(brand.name, list);
 const desc = `${brand.name} welder specs from manufacturer pages: ${list.map((m) => m.name.replace(brand.name + ' ', '')).join(', ')}.`;
 const jsonld = [
   webPageLd(`${brand.name} welder specs`, path, desc, SITE.checked),
   crumbLd(crumbs),
   { '@type': 'ItemList', itemListElement: list.map((m, i) => ({ '@type': 'ListItem', position: i + 1, name: m.name, url: SITE.url + modelPath(m) })) },
+  {
+    '@type': 'FAQPage',
+    mainEntity: sections.map((section) => ({
+      '@type': 'Question',
+      name: section.heading,
+      acceptedAnswer: { '@type': 'Answer', text: section.paragraphs.join(' ') },
+    })),
+  },
 ];
 ---
 <Base title={`${brand.name} welder specs`} description={desc} path={path} nav="models" og={`/og/brand-${brand.slug}.png`} jsonld={jsonld}>
   <div class="wrap">
     <div class="pagehead">
       <Crumbs crumbs={crumbs} />
-      <h1>{brand.name}</h1>
-      <p class="lede">{list.length} on the sheet. Checked {checkedLabel(SITE.checked)}.</p>
-      <Byline />
+      <h1>{brand.name} welder specs</h1>
+      <p class="lede">Manufacturer specifications for the {brand.name} welders transcribed on this site. Open a model for the source link on every row.</p>
     </div>
     <MachineTable rows={list} />
+    <Guide sections={sections} />
   </div>
 </Base>

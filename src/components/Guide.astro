@@ -1,0 +1,13 @@
+---
+import type { Section } from '../lib/guide';
+interface Props { sections: Section[] }
+const { sections } = Astro.props;
+---
+<div class="guide">
+  {sections.map((section) => (
+    <section>
+      <h2>{section.heading}</h2>
+      {section.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+    </section>
+  ))}
+</div>

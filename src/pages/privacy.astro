@@ -1,6 +1,5 @@
 ---
 import Base from '../layouts/Base.astro';
-import Byline from '../components/Byline.astro';
 import Crumbs from '../components/Crumbs.astro';
 import { SITE } from '../lib/site';
 import { crumbLd, webPageLd } from '../lib/ld';
@@ -14,13 +13,18 @@ const jsonld = [webPageLd('Privacy policy', '/privacy/', desc, SITE.checked), cr
     <div class="pagehead">
       <Crumbs crumbs={crumbs} />
       <h1>Privacy</h1>
-      <Byline />
     </div>
-    <p>Static site. No account. The job check runs in the browser. The numbers you type are not sent here. The outlet chip is stored in localStorage on your machine.</p>
-    <h2>Mail</h2>
-    <p>The contact page opens your mail app to {SITE.email}. This site does not receive the message.</p>
-    <h2>Cookies</h2>
-    <p>No analytics cookie. No ad script. Cloudflare may keep request logs. Amazon may set cookies if you follow a search link.</p>
-    <p><a href={`mailto:${SITE.email}`}>{SITE.email}</a></p>
+    <p>WeldFacts.com is a static site. You can read every page without an account. There is no newsletter, no comment box stored on the server, and no advertising script. This policy describes what the site itself does with information. It was last aligned with the site on 2 November 2026.</p>
+    <h2>What you type into the job check</h2>
+    <p>The outlet, breaker, metal, thickness, and process are handled in your browser. The script compares them with figures that were already built into the page. Those entries are not sent to WeldFacts and are not written to an account, because there is no account. Leaving the page clears them, except for the outlet chip described below.</p>
+    <h2>The outlet chip</h2>
+    <p>The 120 V / 15 A and 240 V / 50 A buttons store one value in localStorage on your machine, under the key wf-outlet. The value is either 120-15 or 240-50. It is there so the same chip stays selected when you open another page on this site. It is not sent to a WeldFacts server. You can clear it by clearing site data for weldfacts.com in your browser. The site does not set an analytics cookie and does not set an advertising cookie.</p>
+    <h2>Email</h2>
+    <p>The contact form opens your own email app addressed to {SITE.email}. The message is not received by a form handler on this site. Whatever you send is email between you and that mailbox. Do not include passwords or payment numbers. There is no other published address.</p>
+    <h2>Host and Amazon</h2>
+    <p>The site is hosted as static files. A host such as Cloudflare may keep ordinary request logs, including IP address, user agent, and the URL requested, in order to serve and secure the site. WeldFacts does not run a separate analytics product on top of those logs, and it does not sell a user list. There is no user list to sell.</p>
+    <p>If you follow an Amazon search link, you leave this site. Amazon may set its own cookies and apply its own privacy policy to that visit. The link carries the associates tag weldfacts-20 so a qualifying purchase can be attributed. That tag is not a WeldFacts account for you.</p>
+    <h2>Children and changes</h2>
+    <p>The site is a technical reference for welding equipment. It is not directed at children, and it does not knowingly collect personal information from children. Questions about this policy go to <a href={`mailto:${SITE.email}`}>{SITE.email}</a>. If the way the site handles data changes, this page will change with it. The checked date in the footer is the spec-read date. It is not a promise that every legal sentence was re-litigated on that day.</p>
   </div>
 </Base>
