@@ -1,0 +1,28 @@
+{
+  "name": "weldfacts-com",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "prebuild": "node --experimental-strip-types scripts/check-specs.mjs && node --experimental-strip-types scripts/gen-og.mjs",
+    "build": "astro build",
+    "preview": "astro preview",
+    "og": "node --experimental-strip-types scripts/gen-og.mjs",
+    "indexnow": "node scripts/indexnow.mjs",
+    "test": "node --experimental-strip-types scripts/job.test.mjs"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.4",
+    "@fontsource/figtree": "^5.2.10",
+    "@fontsource/ibm-plex-mono": "^5.2.7",
+    "@fontsource/outfit": "^5.2.8",
+    "astro": "^5.18.2"
+  },
+  "devDependencies": {
+    "sharp": "^0.34.5"
+  }
+}

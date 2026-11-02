@@ -1,0 +1,10 @@
+{
+  // Cloudflare Pages project for weldfacts.com.
+  // Build command: npm run build. Node 22. Output directory is dist.
+  "name": "weldfacts",
+  "pages_build_output_dir": "./dist",
+  "compatibility_date": "2026-11-02",
+  "vars": {
+    "NODE_VERSION": "22"
+  }
+}

@@ -1,0 +1,42 @@
+---
+import Base from '../../layouts/Base.astro';
+import Byline from '../../components/Byline.astro';
+import Crumbs from '../../components/Crumbs.astro';
+import { brands, models, modelPath } from '../../data/models';
+import { SITE } from '../../lib/site';
+import { crumbLd, webPageLd } from '../../lib/ld';
+import { checkedLabel } from '../../lib/seo';
+
+export function getStaticPaths() {
+  return brands().map((b) => ({ params: { brand: b.slug }, props: { brand: b } }));
+}
+const { brand } = Astro.props;
+const list = models.filter((m) => m.brandSlug === brand.slug);
+const path = `/brands/${brand.slug}/`;
+const crumbs = [{ name: brand.name, path }];
+const desc = `${brand.name} welder specs cited from manufacturer pages: ${list.map((m) => m.name.replace(brand.name + ' ', '')).join(', ')}.`;
+const jsonld = [
+  webPageLd(`${brand.name} welder specs`, path, desc, SITE.checked),
+  crumbLd(crumbs),
+  { '@type': 'ItemList', itemListElement: list.map((m, i) => ({ '@type': 'ListItem', position: i + 1, name: m.name, url: SITE.url + modelPath(m) })) },
+];
+---
+<Base title={`${brand.name} welder specs`} description={desc} path={path} nav="models" og={`/og/brand-${brand.slug}.png`} jsonld={jsonld}>
+  <div class="wrap">
+    <div class="pagehead">
+      <Crumbs crumbs={crumbs} />
+      <h1>{brand.name}</h1>
+      <p class="lede">{list.length} model{list.length === 1 ? '' : 's'} with a spec table. Figures are from each model’s manufacturer page, checked {checkedLabel(SITE.checked)}.</p>
+      <Byline />
+    </div>
+    <div class="grid2">
+      {list.map((m) => (
+        <a class="card" href={modelPath(m)}>
+          <h2>{m.name}</h2>
+          <p>{m.summary}</p>
+          <p class="go">Open the spec table</p>
+        </a>
+      ))}
+    </div>
+  </div>
+</Base>

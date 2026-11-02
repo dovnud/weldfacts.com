@@ -1,0 +1,66 @@
+---
+import Base from '../../layouts/Base.astro';
+import Byline from '../../components/Byline.astro';
+import Crumbs from '../../components/Crumbs.astro';
+import SpecTable from '../../components/SpecTable.astro';
+import BuyBlock from '../../components/BuyBlock.astro';
+import FaqList from '../../components/FaqList.astro';
+import { models, modelPath } from '../../data/models';
+import { modelFaqs, productLd, specRows } from '../../lib/modelView';
+import { SITE } from '../../lib/site';
+import { crumbLd, webPageLd } from '../../lib/ld';
+
+export function getStaticPaths() {
+  return models.map((m) => ({ params: { slug: m.slug }, props: { model: m } }));
+}
+const { model: m } = Astro.props;
+const path = modelPath(m);
+const crumbs = [{ name: 'Models', path: '/models/' }, { name: m.name, path }];
+const desc = m.summary;
+const faqs = modelFaqs(m);
+const jsonld = [
+  webPageLd(`${m.name} specs`, path, desc, SITE.checked),
+  crumbLd(crumbs),
+  productLd(m),
+  { '@type': 'FAQPage', mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) },
+];
+const rows = specRows(m);
+const ampSource = m.output.published ? m.output.text.replace(/\s+/g, ' ').trim() : '—';
+const amp = ampSource.length > 48 ? `${ampSource.slice(0, 46)}…` : ampSource;
+---
+<Base title={`${m.name} specs`} description={desc} path={path} nav="models" og={`/og/model-${m.slug}.png`} ogAlt={`${m.name} specs`} jsonld={jsonld}>
+  <div class="wrap">
+    <div class="pagehead">
+      <Crumbs crumbs={crumbs} />
+      <p class="kicker">{m.brand}{m.sku ? ` · ${m.sku}` : ''}</p>
+      <h1>{m.name}</h1>
+      <p class="lede">{m.summary}</p>
+      <BuyBlock slug={m.slug} query={m.searchQuery} name={m.name} />
+      <Byline />
+    </div>
+    <div class="spec-strip" aria-label="Published headline figures">
+      <div class="spec-cell"><b>{m.voltages.map((v) => `${v}V`).join(' / ')}</b><span>Input class</span></div>
+      <div class="spec-cell"><b>{m.procs.length}</b><span>Processes</span></div>
+      <div class="spec-cell"><b>{m.weightLb ?? '—'}</b><span>Weight lb</span></div>
+      <div class="spec-cell"><b>{amp.length > 42 ? `${amp.slice(0, 40)}…` : amp}</b><span>Output</span></div>
+    </div>
+    <h2>Specifications</h2>
+    <p class="small muted">Values are copied from the cited page. They are not estimated from another model or from a review.</p>
+    <SpecTable rows={rows} />
+    {m.notes.length > 0 && (
+      <>
+        <h2>Notes from the source</h2>
+        <ul>{m.notes.map((n) => <li>{n}</li>)}</ul>
+      </>
+    )}
+    <p>
+      <a href={m.productUrl} rel="noopener">Manufacturer page</a>
+      · <a href={`/which-welder/?model=${m.slug}`}>Check this model against an outlet</a>
+      · <a href="/compare/best-for-120v/">120 V list</a>
+      · <a href="/compare/best-for-240v/">240 V list</a>
+      · <a href={`/brands/${m.brandSlug}/`}>{m.brand} models</a>
+    </p>
+    <h2>Questions the table can answer</h2>
+    <FaqList items={faqs} />
+  </div>
+</Base>

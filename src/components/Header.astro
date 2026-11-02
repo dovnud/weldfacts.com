@@ -1,0 +1,24 @@
+---
+interface Props { active?: string }
+const { active = '' } = Astro.props;
+const links = [
+  ['/', 'Home', 'home'],
+  ['/compare/best-for-120v/', '120V', 'v120'],
+  ['/compare/best-for-240v/', '240V', 'v240'],
+  ['/compare/best-multiprocess/', 'Multi-process', 'multi'],
+  ['/models/', 'Models', 'models'],
+  ['/which-welder/', 'Which welder', 'job'],
+];
+---
+<header class="site">
+  <div class="head-in wrap">
+    <a class="brand" href="/">Weld<span>Facts</span><small>Amps, duty cycle, outlet</small></a>
+    <nav class="main" aria-label="Main">
+      <ul>
+        {links.map(([href, label, key]) => (
+          <li><a href={href} aria-current={active === key ? 'page' : undefined}>{label}</a></li>
+        ))}
+      </ul>
+    </nav>
+  </div>
+</header>

@@ -1,0 +1,20 @@
+---
+import { AFFILIATE_REL, AFFILIATE_TARGET, AMAZON_DISCLOSURE, linkFor } from '../config/affiliate';
+interface Props { slug: string; query: string; name: string }
+const { slug, query, name } = Astro.props;
+const link = linkFor(slug, query);
+const label = link.kind === 'product' ? `View the ${name} on Amazon` : `Search Amazon for the ${name}`;
+---
+<aside class="buy">
+  <div class="buy-head">{link.kind === 'product' ? 'On Amazon' : 'Find it on Amazon'}</div>
+  <div class="buy-body">
+    <p><a class="btn" href={link.href} rel={AFFILIATE_REL} target={AFFILIATE_TARGET}>{label}</a></p>
+    <p class="amz-note">
+      {AMAZON_DISCLOSURE}
+      {link.kind === 'product'
+        ? ` This goes to the Amazon page opened on ${link.verified}, whose title was “${link.title}.”`
+        : ' This is an Amazon search. A result is not a verified product match.'}
+      No price is shown here.
+    </p>
+  </div>
+</aside>

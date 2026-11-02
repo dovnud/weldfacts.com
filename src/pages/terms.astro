@@ -1,0 +1,25 @@
+---
+import Base from '../layouts/Base.astro';
+import Byline from '../components/Byline.astro';
+import Crumbs from '../components/Crumbs.astro';
+import { SITE } from '../lib/site';
+import { crumbLd, webPageLd } from '../lib/ld';
+
+const crumbs = [{ name: 'Terms', path: '/terms/' }];
+const desc = 'Terms of use for WeldFacts.com. Specs are transcriptions of manufacturer pages. The manufacturer manual governs the machine.';
+const jsonld = [webPageLd('Terms of use', '/terms/', desc, SITE.checked), crumbLd(crumbs)];
+---
+<Base title="Terms of use" description={desc} path="/terms/" og="/og/page-terms.png" jsonld={jsonld}>
+  <div class="wrap prose">
+    <div class="pagehead">
+      <Crumbs crumbs={crumbs} />
+      <h1>Terms</h1>
+      <Byline />
+    </div>
+    <p>WeldFacts.com is an information site. The tables are transcriptions of manufacturer pages and manuals as of the checked date on each page. Manufacturers change products. Read the manual that comes with the machine before you buy or weld.</p>
+    <p>The which-welder result compares the numbers you enter with the numbers those pages published. It is not an electrical inspection, a structural opinion, or a promise that a weld will hold. A pass does not mean the circuit in the wall matches the breaker size you typed.</p>
+    <p>Product names are used to identify machines. They are trademarks of their owners. The site is not affiliated with those companies or with Amazon.</p>
+    <p>Amazon links are affiliate links (tag weldfacts-20). See the <a href="/affiliate-disclosure/">affiliate disclosure</a>.</p>
+    <p>Questions: <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.</p>
+  </div>
+</Base>

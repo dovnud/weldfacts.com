@@ -1,0 +1,51 @@
+---
+import Base from '../../layouts/Base.astro';
+import Byline from '../../components/Byline.astro';
+import Crumbs from '../../components/Crumbs.astro';
+import { models, modelPath, steelMax } from '../../data/models';
+import { SITE } from '../../lib/site';
+import { crumbLd, webPageLd } from '../../lib/ld';
+
+const ranked = models
+  .filter((m) => m.voltages.includes(240))
+  .map((m) => ({ m, thick: steelMax(m, 240) }))
+  .sort((a, b) => {
+    if (a.thick == null && b.thick == null) return a.m.name.localeCompare(b.m.name);
+    if (a.thick == null) return 1;
+    if (b.thick == null) return -1;
+    return b.thick - a.thick || a.m.name.localeCompare(b.m.name);
+  });
+const path = '/compare/best-for-240v/';
+const crumbs = [{ name: 'Compare', path: '/compare/' }, { name: '240 V', path }];
+const desc = 'Welders with a published 230 V or 240 V class input, ranked by the mild-steel thickness the manufacturer printed.';
+const jsonld = [
+  webPageLd('Welders for a 240 V outlet', path, desc, SITE.checked),
+  crumbLd(crumbs),
+  { '@type': 'ItemList', itemListElement: ranked.map((row, i) => ({ '@type': 'ListItem', position: i + 1, name: row.m.name, url: SITE.url + modelPath(row.m) })) },
+];
+---
+<Base title="Welders for a 240 V outlet" description={desc} path={path} nav="v240" og="/og/page-240v.png" jsonld={jsonld}>
+  <div class="wrap">
+    <div class="pagehead">
+      <Crumbs crumbs={crumbs} />
+      <h1>Published 240 V machines</h1>
+      <p class="lede">A cited 208–240 V, 230 V, or 240 V input puts the machine here. 460 V and 575 V do not. The order is published mild-steel thickness, thickest first. No thickness number sorts last.</p>
+      <Byline />
+    </div>
+    <div class="tblwrap">
+      <table>
+        <thead><tr><th>#</th><th>Model</th><th>240 V class mild steel</th><th>Duty cycle</th></tr></thead>
+        <tbody>
+          {ranked.map((row, i) => (
+            <tr>
+              <td>{i + 1}</td>
+              <td><a href={modelPath(row.m)}>{row.m.name}</a></td>
+              <td>{row.thick == null ? 'Not published' : `${row.thick} in max`}</td>
+              <td>{row.m.duty.published ? row.m.duty.text : 'Not published'}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</Base>

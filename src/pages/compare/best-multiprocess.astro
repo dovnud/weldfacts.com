@@ -1,0 +1,47 @@
+---
+import Base from '../../layouts/Base.astro';
+import Byline from '../../components/Byline.astro';
+import Crumbs from '../../components/Crumbs.astro';
+import { models, modelPath } from '../../data/models';
+import { SITE } from '../../lib/site';
+import { crumbLd, webPageLd } from '../../lib/ld';
+
+const labels: Record<string, string> = { mig: 'MIG', flux: 'flux-cored', stick: 'stick', tig: 'TIG' };
+const ranked = models
+  .filter((m) => m.procs.length >= 3)
+  .slice()
+  .sort((a, b) => b.procs.length - a.procs.length || a.name.localeCompare(b.name));
+const path = '/compare/best-multiprocess/';
+const crumbs = [{ name: 'Compare', path: '/compare/' }, { name: 'Multi-process', path }];
+const desc = 'Welders whose manufacturer page names at least three processes, listed from the longest published process list.';
+const jsonld = [
+  webPageLd('Multi-process welders', path, desc, SITE.checked),
+  crumbLd(crumbs),
+  { '@type': 'ItemList', itemListElement: ranked.map((m, i) => ({ '@type': 'ListItem', position: i + 1, name: m.name, url: SITE.url + modelPath(m) })) },
+];
+---
+<Base title="Multi-process welders" description={desc} path={path} nav="multi" og="/og/page-multi.png" jsonld={jsonld}>
+  <div class="wrap">
+    <div class="pagehead">
+      <Crumbs crumbs={crumbs} />
+      <h1>Multi-process, as published</h1>
+      <p class="lede">MIG and flux-cored are two processes. A machine is on this list when the cited page names a third. The order is the count, then the name. It is not a score of how well any process welds.</p>
+      <Byline />
+    </div>
+    <div class="tblwrap">
+      <table>
+        <thead><tr><th>#</th><th>Model</th><th>Processes named</th><th>Input class</th></tr></thead>
+        <tbody>
+          {ranked.map((m, i) => (
+            <tr>
+              <td>{i + 1}</td>
+              <td><a href={modelPath(m)}>{m.name}</a></td>
+              <td>{m.procs.map((p) => labels[p]).join(', ')}</td>
+              <td class="mono">{m.voltages.map((v) => `${v} V`).join(' / ')}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</Base>

@@ -1,0 +1,52 @@
+---
+import Base from '../../layouts/Base.astro';
+import Byline from '../../components/Byline.astro';
+import Crumbs from '../../components/Crumbs.astro';
+import { models, modelPath, steelMax } from '../../data/models';
+import { SITE } from '../../lib/site';
+import { crumbLd, webPageLd } from '../../lib/ld';
+
+const ranked = models
+  .filter((m) => m.voltages.includes(120))
+  .map((m) => ({ m, thick: steelMax(m, 120) }))
+  .sort((a, b) => {
+    if (a.thick == null && b.thick == null) return a.m.name.localeCompare(b.m.name);
+    if (a.thick == null) return 1;
+    if (b.thick == null) return -1;
+    return b.thick - a.thick || a.m.name.localeCompare(b.m.name);
+  });
+const path = '/compare/best-for-120v/';
+const crumbs = [{ name: 'Compare', path: '/compare/' }, { name: '120 V', path }];
+const desc = 'Welders with a published 120 V input, ranked by the mild-steel thickness the manufacturer printed for that voltage.';
+const jsonld = [
+  webPageLd('Welders for a 120 V outlet', path, desc, SITE.checked),
+  crumbLd(crumbs),
+  { '@type': 'ItemList', itemListElement: ranked.map((row, i) => ({ '@type': 'ListItem', position: i + 1, name: row.m.name, url: SITE.url + modelPath(row.m) })) },
+];
+---
+<Base title="Welders for a 120 V outlet" description={desc} path={path} nav="v120" og="/og/page-120v.png" jsonld={jsonld}>
+  <div class="wrap">
+    <div class="pagehead">
+      <Crumbs crumbs={crumbs} />
+      <h1>Published 120 V machines</h1>
+      <p class="lede">Every model here has 120 V on its cited input line. The order is the mild-steel thickness printed for 120 V, thickest first. A machine with no thickness number sorts last. This is not a weld-quality ranking, and it does not assume a 15 A or 20 A breaker.</p>
+      <Byline />
+    </div>
+    <div class="tblwrap">
+      <table>
+        <thead><tr><th>#</th><th>Model</th><th>120 V mild steel, published</th><th>Duty cycle</th></tr></thead>
+        <tbody>
+          {ranked.map((row, i) => (
+            <tr>
+              <td>{i + 1}</td>
+              <td><a href={modelPath(row.m)}>{row.m.name}</a></td>
+              <td>{row.thick == null ? 'Not published' : `${row.thick} in max`}</td>
+              <td>{row.m.duty.published ? row.m.duty.text : 'Not published'}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <p class="small muted">Use the <a href="/which-welder/">outlet check</a> when you know the breaker size. Input current at rated output is not the same thing as a recommended breaker.</p>
+  </div>
+</Base>

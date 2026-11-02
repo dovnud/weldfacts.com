@@ -1,0 +1,64 @@
+---
+import Base from '../../layouts/Base.astro';
+import Byline from '../../components/Byline.astro';
+import Crumbs from '../../components/Crumbs.astro';
+import { pairs, modelPath } from '../../data/models';
+import { specRows } from '../../lib/modelView';
+import { SITE } from '../../lib/site';
+import { crumbLd, webPageLd } from '../../lib/ld';
+
+export function getStaticPaths() {
+  return pairs().map((p) => ({ params: { pair: p.slug }, props: { pair: p } }));
+}
+const { pair } = Astro.props;
+const path = `/compare/${pair.slug}/`;
+const crumbs = [{ name: 'Compare', path: '/compare/' }, { name: `${pair.a.name} vs ${pair.b.name}`, path }];
+const desc = `${pair.a.name} vs ${pair.b.name}. Same spec fields, each value cited to the manufacturer page that printed it.`;
+const rowsA = specRows(pair.a);
+const rowsB = specRows(pair.b);
+const jsonld = [
+  webPageLd(`${pair.a.name} vs ${pair.b.name}`, path, desc, SITE.checked),
+  crumbLd(crumbs),
+  {
+    '@type': 'ItemList',
+    itemListElement: [pair.a, pair.b].map((m, i) => ({ '@type': 'ListItem', position: i + 1, name: m.name, url: SITE.url + modelPath(m) })),
+  },
+];
+---
+<Base title={`${pair.a.name} vs ${pair.b.name}`} description={desc} path={path} nav="compare" og="/og/page-compare.png" jsonld={jsonld}>
+  <div class="wrap">
+    <div class="pagehead">
+      <Crumbs crumbs={crumbs} />
+      <h1>{pair.a.name} vs {pair.b.name}</h1>
+      <p class="lede">Each cell is that model’s published text. A blank in the source stays “Not published by manufacturer.”</p>
+      <Byline />
+    </div>
+    <div class="tblwrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Spec</th>
+            <th><a href={modelPath(pair.a)}>{pair.a.name}</a></th>
+            <th><a href={modelPath(pair.b)}>{pair.b.name}</a></th>
+          </tr>
+        </thead>
+        <tbody>
+          {rowsA.map((row, i) => (
+            <tr>
+              <th scope="row">{row.label}</th>
+              <td class={row.field.published ? undefined : 'unpub'}>
+                {row.field.text}
+                <div class="small"><a href={row.field.cite.url} rel="noopener">Source</a></div>
+              </td>
+              <td class={rowsB[i].field.published ? undefined : 'unpub'}>
+                {rowsB[i].field.text}
+                <div class="small"><a href={rowsB[i].field.cite.url} rel="noopener">Source</a></div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <p><a href={`/which-welder/?model=${pair.a.slug}`}>Outlet check, {pair.a.name}</a> · <a href={`/which-welder/?model=${pair.b.slug}`}>Outlet check, {pair.b.name}</a></p>
+  </div>
+</Base>

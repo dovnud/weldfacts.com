@@ -1,0 +1,67 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { SITE } from '../lib/site';
+import { graph, ldEscape } from '../lib/ld';
+import { isoDate, metaDescription, serpTitle } from '../lib/seo';
+import pageDates from '../data/page-dates.json';
+
+export interface Props {
+  title: string;
+  description: string;
+  path: string;
+  og?: string;
+  ogAlt?: string;
+  nav?: string;
+  jsonld?: Record<string, unknown>[];
+  noindex?: boolean;
+}
+const { title, description, path, og = '/og/default.png', ogAlt, nav = '', jsonld = [], noindex = false } = Astro.props;
+const canonical = SITE.url + path;
+const fullTitle = serpTitle(title);
+const metaDesc = metaDescription(description);
+const dated = (pageDates as Record<string, string>)[path];
+const modifiedIso = isoDate(dated);
+const ld = graph(jsonld);
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#1c2430" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={metaDesc} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex,follow" />}
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt" />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={metaDesc} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={SITE.url + og} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={ogAlt ?? `${SITE.name} — ${SITE.tagline}`} />
+    {modifiedIso && <meta property="article:modified_time" content={modifiedIso} />}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={metaDesc} />
+    <meta name="twitter:image" content={SITE.url + og} />
+    <script type="application/ld+json" set:html={ldEscape(ld)} />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <Header active={nav} />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

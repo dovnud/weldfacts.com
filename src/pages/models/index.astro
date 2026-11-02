@@ -1,0 +1,33 @@
+---
+import Base from '../../layouts/Base.astro';
+import Byline from '../../components/Byline.astro';
+import Crumbs from '../../components/Crumbs.astro';
+import { models, modelPath } from '../../data/models';
+import { SITE } from '../../lib/site';
+import { crumbLd, webPageLd } from '../../lib/ld';
+
+const crumbs = [{ name: 'Models', path: '/models/' }];
+const desc = 'Welder spec pages for Lincoln Electric, Miller, Hobart, ESAB, PrimeWeld, and Harbor Freight. Every number cites the manufacturer page it came from.';
+const jsonld = [webPageLd('Welder models', '/models/', desc, SITE.checked), crumbLd(crumbs)];
+---
+<Base title="Welder models and specs" description={desc} path="/models/" nav="models" og="/og/page-models.png" jsonld={jsonld}>
+  <div class="wrap">
+    <div class="pagehead">
+      <Crumbs crumbs={crumbs} />
+      <h1>Models</h1>
+      <p class="lede">{models.length} machines. Each table is what the manufacturer published, plus the URL and the date we read it.</p>
+      <Byline />
+    </div>
+    <div class="grid2">
+      {models.map((m) => (
+        <a class="card" href={modelPath(m)}>
+          <p class="kicker">{m.brand}{m.sku ? ` · ${m.sku}` : ''}</p>
+          <h2>{m.name}</h2>
+          <p>{m.duty.published ? m.duty.text : 'Duty cycle not published.'}</p>
+          <p class="small muted">{m.input.published ? m.input.text : 'Input not published.'}</p>
+          <p class="go">Spec table</p>
+        </a>
+      ))}
+    </div>
+  </div>
+</Base>

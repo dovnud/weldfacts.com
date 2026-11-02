@@ -1,0 +1,7 @@
+---
+import { checkedLabel } from '../lib/seo';
+import { SITE } from '../lib/site';
+interface Props { date?: string }
+const { date = SITE.checked } = Astro.props;
+---
+<p class="byline">By <a href="/about/" rel="author">the WeldFacts editorial team</a> · Checked <time datetime={date}>{checkedLabel(date)}</time> · <a href="/how-we-verify/">How we verify</a></p>

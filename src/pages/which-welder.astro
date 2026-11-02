@@ -1,0 +1,167 @@
+---
+import Base from '../layouts/Base.astro';
+import Byline from '../components/Byline.astro';
+import Crumbs from '../components/Crumbs.astro';
+import { models } from '../data/models';
+import { SITE } from '../lib/site';
+import { crumbLd, webPageLd } from '../lib/ld';
+
+const crumbs = [{ name: 'Which welder', path: '/which-welder/' }];
+const desc = 'Match a 120 V or 240 V outlet, breaker size, metal, thickness, and process to published welder ratings. Missing figures are not filled in.';
+const faqs = [
+  {
+    q: 'Does a 230 V rating count as a 240 V outlet?',
+    a: 'Yes. The tool treats a published 208–240 V, 230 V, or 240 V input as the 240 V outlet choice, and it says so on the result. 460 V and 575 V do not match either household choice. 120 V, 115 V, and 110 V match the 120 V choice.',
+  },
+  {
+    q: 'Is input current the breaker size?',
+    a: 'No. Many sheets print amperes at rated output, which is a draw, and do not print a recommended breaker. If the draw is larger than the breaker you type, that check fails. If the draw fits and no breaker size is printed, the check is a warning, not a pass. A pass requires a breaker size the manufacturer actually printed, such as Hobart’s 15 A and 20 A rows on the Handler 210i.',
+  },
+  {
+    q: 'What happens when thickness is a single-pass figure?',
+    a: 'If the page says “single pass” and also says thicker material is possible without printing a second maximum, a thicker job is a warning. If the page prints a maximum and does not call it single-pass only, a thicker job fails.',
+  },
+  {
+    q: 'Why can aluminum fail on a TIG welder?',
+    a: 'Aluminum passes only when the cited page names aluminum. DC TIG that does not name aluminum fails that metal. The tool does not treat “TIG” alone as an aluminum process.',
+  },
+];
+const jsonld = [
+  webPageLd('Which welder for this outlet and job', '/which-welder/', desc, SITE.checked),
+  crumbLd(crumbs),
+  { '@type': 'FAQPage', mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) },
+];
+const thicknesses = [
+  ['0.0625', '1/16 in'],
+  ['0.125', '1/8 in'],
+  ['0.1875', '3/16 in'],
+  ['0.25', '1/4 in'],
+  ['0.375', '3/8 in'],
+  ['0.5', '1/2 in'],
+  ['0.625', '5/8 in'],
+];
+---
+<Base title="Which welder for this outlet" description={desc} path="/which-welder/" nav="job" og="/og/page-which-welder.png" jsonld={jsonld}>
+  <div class="wrap">
+    <div class="pagehead">
+      <Crumbs crumbs={crumbs} />
+      <h1>Which welder</h1>
+      <p class="lede">Outlet voltage, breaker amperage, metal, thickness, and process. Results use published ratings. A line says when a figure was missing and was not scored.</p>
+      <Byline />
+    </div>
+    <form class="finder" id="job-form">
+      <div class="finder-head">Outlet and job <span>No guessed amps</span></div>
+      <div class="finder-body">
+        <div class="f-grid">
+          <div>
+            <label for="voltage">Outlet</label>
+            <select id="voltage" name="voltage">
+              <option value="120">120 V</option>
+              <option value="240">240 V</option>
+            </select>
+          </div>
+          <div>
+            <label for="breakerA">Breaker amperage</label>
+            <input id="breakerA" name="breakerA" type="number" min="1" step="1" required value="20" />
+          </div>
+          <div>
+            <label for="process">Process</label>
+            <select id="process" name="process">
+              <option value="mig">MIG (solid wire)</option>
+              <option value="flux">Flux-cored</option>
+              <option value="stick">Stick</option>
+              <option value="tig">TIG</option>
+            </select>
+          </div>
+          <div>
+            <label for="material">Metal</label>
+            <select id="material" name="material">
+              <option value="mild-steel">Mild steel</option>
+              <option value="stainless">Stainless steel</option>
+              <option value="aluminum">Aluminum</option>
+              <option value="cast-iron">Cast iron</option>
+            </select>
+          </div>
+          <div>
+            <label for="thicknessIn">Thickness</label>
+            <select id="thicknessIn" name="thicknessIn">
+              {thicknesses.map(([value, label]) => <option value={value}>{label}</option>)}
+            </select>
+          </div>
+          <div>
+            <label for="model">One model, or all</label>
+            <select id="model" name="model">
+              <option value="">All models</option>
+              {models.map((m) => <option value={m.slug}>{m.name}</option>)}
+            </select>
+          </div>
+        </div>
+        <button class="f-btn" type="submit">Check the published ratings</button>
+      </div>
+    </form>
+    <div id="job-out" hidden></div>
+    <h2>How a pass is decided</h2>
+    <div class="prose">
+      <ul>
+        <li>Voltage passes when the cited input includes that outlet class. 230 V and 208–240 V count as the 240 V choice. 460 V and 575 V do not.</li>
+        <li>If the sheet names a breaker size, the check uses the largest such row that is not above the breaker you typed. Input current on that row still has to fit.</li>
+        <li>If the sheet only prints input current at rated output, a breaker smaller than that current fails. A larger breaker is a warning, because a draw is not a recommended breaker.</li>
+        <li>Process has to be named. Aluminum on TIG passes only when the page names aluminum. DC TIG that never names aluminum fails that metal.</li>
+        <li>Thickness uses a printed inch maximum. A single-pass figure with no multi-pass maximum is a warning when you go past it, not a fail. Gauge-only ranges are not converted.</li>
+      </ul>
+    </div>
+    {faqs.map((f) => (
+      <details class="faq"><summary>{f.q}</summary><div class="a"><p>{f.a}</p></div></details>
+    ))}
+  </div>
+</Base>
+<script>
+  import { getModel, modelPath, models } from '../data/models';
+  import { evaluateJob, rankJobs } from '../lib/job';
+
+  const form = document.getElementById('job-form') as HTMLFormElement;
+  const out = document.getElementById('job-out') as HTMLElement;
+  const params = new URLSearchParams(location.search);
+  const preset = params.get('model');
+  if (preset) {
+    const select = form.querySelector('#model') as HTMLSelectElement;
+    if ([...select.options].some((o) => o.value === preset)) select.value = preset;
+  }
+
+  form.addEventListener('submit', (ev) => {
+    ev.preventDefault();
+    const data = new FormData(form);
+    const input = {
+      voltage: Number(data.get('voltage')) === 240 ? 240 as const : 120 as const,
+      breakerA: Number(data.get('breakerA')),
+      material: String(data.get('material')) as 'mild-steel' | 'stainless' | 'aluminum' | 'cast-iron',
+      thicknessIn: Number(data.get('thicknessIn')),
+      process: String(data.get('process')) as 'mig' | 'flux' | 'stick' | 'tig',
+    };
+    const one = String(data.get('model') || '');
+    const renderChecks = (model: (typeof models)[number]) => {
+      const result = evaluateJob(model, input);
+      const checks = result.checks.map((ch) => `<div class="check-row"><div class="pill ${ch.status}">${ch.status}</div><div><strong>${ch.title}</strong><p>${ch.detail}</p></div></div>`).join('');
+      return `<section><h2>${model.name}</h2><p>${result.headline}</p><p><a href="${modelPath(model)}">Spec table</a></p>${checks}</section>`;
+    };
+    out.hidden = false;
+    if (one) {
+      const model = getModel(one);
+      out.innerHTML = model ? renderChecks(model) : '';
+    } else {
+      const groups = rankJobs(models, input);
+      const block = (title: string, list: typeof models) => {
+        if (!list.length) return `<h2>${title}</h2><p>None.</p>`;
+        return `<h2>${title}</h2>` + list.map((m) => {
+          const result = evaluateJob(m, input);
+          const checks = result.checks.map((ch) => `<div class="check-row"><div class="pill ${ch.status}">${ch.status}</div><div><strong>${ch.title}</strong><p>${ch.detail}</p></div></div>`).join('');
+          return `<article class="card"><h3><a href="${modelPath(m)}">${m.name}</a></h3><p>${result.headline}</p>${checks}</article>`;
+        }).join('');
+      };
+      out.innerHTML = block(`Fits the published figures (${groups.fit.length})`, groups.fit)
+        + block(`Partial: a figure is missing or only partly covers this outlet (${groups.partial.length})`, groups.partial)
+        + block(`Does not fit (${groups.out.length})`, groups.out);
+    }
+    out.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+</script>

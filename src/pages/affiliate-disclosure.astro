@@ -1,0 +1,27 @@
+---
+import Base from '../layouts/Base.astro';
+import Byline from '../components/Byline.astro';
+import Crumbs from '../components/Crumbs.astro';
+import { AMAZON_DISCLOSURE, AMAZON_TAG, ASINS } from '../config/affiliate';
+import { SITE } from '../lib/site';
+import { crumbLd, webPageLd } from '../lib/ld';
+
+const crumbs = [{ name: 'Affiliate disclosure', path: '/affiliate-disclosure/' }];
+const desc = 'Amazon Associates disclosure for WeldFacts.com. Links use tag weldfacts-20. Direct product links are only for ASINs checked on a live Amazon page. No prices are shown.';
+const jsonld = [webPageLd('Affiliate disclosure', '/affiliate-disclosure/', desc, SITE.checked), crumbLd(crumbs)];
+const verified = Object.keys(ASINS).length;
+---
+<Base title="Affiliate disclosure" description={desc} path="/affiliate-disclosure/" og="/og/page-affiliate-disclosure.png" jsonld={jsonld}>
+  <div class="wrap prose">
+    <div class="pagehead">
+      <Crumbs crumbs={crumbs} />
+      <h1>Affiliate disclosure</h1>
+      <Byline />
+    </div>
+    <p>{AMAZON_DISCLOSURE}</p>
+    <p>WeldFacts.com participates in the Amazon Associates Program. Amazon is the only affiliate program on this site. There is no advertising network on these pages. Every Amazon link is built in one configuration file. The tag is <span class="mono">{AMAZON_TAG}</span>.</p>
+    <p>A <span class="mono">/dp/</span> link is used only after that Amazon product page has been opened and the title names that one model. {verified === 0 ? 'No model has passed that check in this version, so every button is a tagged search.' : `${verified} models use a direct link. The others are searches.`}</p>
+    <p>We do not show prices.</p>
+    <p>Editorial rows are filled before a shopping link is added, and a missing spec is not filled in because a retailer page mentions one.</p>
+  </div>
+</Base>

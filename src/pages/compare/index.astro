@@ -1,0 +1,67 @@
+---
+import Base from '../../layouts/Base.astro';
+import Byline from '../../components/Byline.astro';
+import Crumbs from '../../components/Crumbs.astro';
+import { models } from '../../data/models';
+import { SITE } from '../../lib/site';
+import { crumbLd, webPageLd } from '../../lib/ld';
+
+const crumbs = [{ name: 'Compare', path: '/compare/' }];
+const desc = 'Compare two welders on the manufacturer figures only, or open the 120 V, 240 V, and multi-process lists built from those figures.';
+const jsonld = [webPageLd('Compare welder specs', '/compare/', desc, SITE.checked), crumbLd(crumbs)];
+---
+<Base title="Compare welder specs" description={desc} path="/compare/" nav="compare" og="/og/page-compare.png" jsonld={jsonld}>
+  <div class="wrap">
+    <div class="pagehead">
+      <Crumbs crumbs={crumbs} />
+      <h1>Compare</h1>
+      <p class="lede">Side-by-side pages repeat each model’s published value and its source. They do not score a winner.</p>
+      <Byline />
+    </div>
+    <form class="finder" id="pair-form">
+      <div class="finder-head">Two models <span>Same fields, two citations</span></div>
+      <div class="finder-body">
+        <div class="f-grid">
+          <div>
+            <label for="a">First</label>
+            <select id="a" name="a">{models.map((m) => <option value={m.slug}>{m.name}</option>)}</select>
+          </div>
+          <div>
+            <label for="b">Second</label>
+            <select id="b" name="b">{models.map((m, i) => <option value={m.slug} selected={i === 1}>{m.name}</option>)}</select>
+          </div>
+        </div>
+        <button class="f-btn" type="submit">Open the comparison</button>
+      </div>
+    </form>
+    <div class="grid3">
+      <a class="card" href="/compare/best-for-120v/">
+        <h2>120 V</h2>
+        <p>Published 120 V input, then mild-steel thickness.</p>
+      </a>
+      <a class="card" href="/compare/best-for-240v/">
+        <h2>240 V</h2>
+        <p>Published 240 V class input, then mild-steel thickness.</p>
+      </a>
+      <a class="card" href="/compare/best-multiprocess/">
+        <h2>Multi-process</h2>
+        <p>Three or more processes the manufacturer names.</p>
+      </a>
+    </div>
+  </div>
+</Base>
+<script>
+  import { models } from '../../data/models';
+  const form = document.getElementById('pair-form') as HTMLFormElement;
+  form.addEventListener('submit', (ev) => {
+    ev.preventDefault();
+    const data = new FormData(form);
+    const a = String(data.get('a'));
+    const b = String(data.get('b'));
+    if (a === b) return;
+    const ia = models.findIndex((m) => m.slug === a);
+    const ib = models.findIndex((m) => m.slug === b);
+    const slug = ia < ib ? `${a}-vs-${b}` : `${b}-vs-${a}`;
+    location.href = `/compare/${slug}/`;
+  });
+</script>

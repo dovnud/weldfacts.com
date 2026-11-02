@@ -1,0 +1,26 @@
+---
+import type { Field } from '../data/models';
+import { CHECKED } from '../data/models';
+import { checkedLabel } from '../lib/seo';
+interface Row { label: string; field: Field }
+interface Props { rows: Row[] }
+const { rows } = Astro.props;
+---
+<div class="tblwrap">
+  <table>
+    <thead>
+      <tr><th>Spec</th><th>Published value</th><th>Source, checked {checkedLabel(CHECKED)}</th></tr>
+    </thead>
+    <tbody>
+      {rows.map((row) => (
+        <tr>
+          <th scope="row">{row.label}</th>
+          <td class={row.field.published ? undefined : 'unpub'}>{row.field.text}</td>
+          <td class="small">
+            <a href={row.field.cite.url} rel="noopener">{row.field.cite.where}</a>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>

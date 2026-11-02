@@ -1,0 +1,35 @@
+---
+import Base from '../layouts/Base.astro';
+import Byline from '../components/Byline.astro';
+import Crumbs from '../components/Crumbs.astro';
+import { SITE } from '../lib/site';
+import { crumbLd, orgLd, webPageLd } from '../lib/ld';
+
+const crumbs = [{ name: 'About', path: '/about/' }];
+const desc = 'WeldFacts.com is an independent reference for manufacturer welder specs and an outlet-and-job check. Pages are by the WeldFacts editorial team.';
+const jsonld = [
+  webPageLd('About WeldFacts.com', '/about/', desc, SITE.checked),
+  crumbLd(crumbs),
+  { '@type': 'AboutPage', name: 'About WeldFacts.com', url: SITE.url + '/about/' },
+  orgLd(),
+];
+---
+<Base title="About WeldFacts.com" description={desc} path="/about/" nav="about" og="/og/page-about.png" jsonld={jsonld}>
+  <div class="wrap prose">
+    <div class="pagehead">
+      <Crumbs crumbs={crumbs} />
+      <h1>About</h1>
+      <Byline />
+    </div>
+    <p>WeldFacts.com publishes welder specifications from manufacturer pages, and a check that compares those ratings with an outlet and a job. It is for someone standing at a breaker panel before a welder arrives.</p>
+    <h2>Who publishes this site</h2>
+    <p>The site is published by WeldFacts, an independent reference. Pages carry the byline “the WeldFacts editorial team.” We do not put an individual author name on a page that is a transcription of a manufacturer table. The source link is the thing to judge.</p>
+    <h2>What the date means</h2>
+    <p>Checked 2 November 2026 means that is when the cited pages and manuals were read for this version of the tables. The date does not move because the layout changed.</p>
+    <h2>How the site is funded</h2>
+    <p>The site is free to read. Amazon links use the Associates tag weldfacts-20. That does not change a specification. Details are in the <a href="/affiliate-disclosure/">affiliate disclosure</a>.</p>
+    <h2>What this site is not</h2>
+    <p>Not a dealer, not a service shop, and not affiliated with any welder brand or with Amazon. The manual that shipped with the machine remains the authority for setup and use. The outlet check is not an electrical inspection.</p>
+    <p>Write to <a href={`mailto:${SITE.email}`}>{SITE.email}</a> or use the <a href="/contact/">contact page</a>.</p>
+  </div>
+</Base>
