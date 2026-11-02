@@ -1,12 +1,12 @@
 ---
 import Base from '../../layouts/Base.astro';
-import Byline from '../../components/Byline.astro';
 import Crumbs from '../../components/Crumbs.astro';
+import Blocks from '../../components/Blocks.astro';
 import MachineTable from '../../components/MachineTable.astro';
 import { brands, models, modelPath } from '../../data/models';
+import { brandBlocks } from '../../lib/guide';
 import { SITE } from '../../lib/site';
 import { crumbLd, webPageLd } from '../../lib/ld';
-import { checkedLabel } from '../../lib/seo';
 
 export function getStaticPaths() {
   return brands().map((b) => ({ params: { brand: b.slug }, props: { brand: b } }));
@@ -16,6 +16,7 @@ const list = models.filter((m) => m.brandSlug === brand.slug);
 const path = `/brands/${brand.slug}/`;
 const crumbs = [{ name: brand.name, path }];
 const desc = `${brand.name} welder specs from manufacturer pages: ${list.map((m) => m.name.replace(brand.name + ' ', '')).join(', ')}.`;
+const blocks = brandBlocks(brand.slug);
 const jsonld = [
   webPageLd(`${brand.name} welder specs`, path, desc, SITE.checked),
   crumbLd(crumbs),
@@ -26,10 +27,11 @@ const jsonld = [
   <div class="wrap">
     <div class="pagehead">
       <Crumbs crumbs={crumbs} />
-      <h1>{brand.name}</h1>
-      <p class="lede">{list.length} on the sheet. Checked {checkedLabel(SITE.checked)}.</p>
-      <Byline />
+      <h1>{brand.name} welder specs</h1>
+      <p class="lede">{list.length} {brand.name} machines with a cited spec page on this site.</p>
     </div>
+    <Blocks blocks={blocks} />
+    <h2>Spec index</h2>
     <MachineTable rows={list} />
   </div>
 </Base>

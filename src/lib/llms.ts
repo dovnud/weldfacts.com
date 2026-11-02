@@ -26,7 +26,7 @@ export function llmsTxt(): string {
     `- [120 V outlets](${abs('/compare/best-for-120v/')}): models with a published 120 V input, ranked by published mild-steel thickness.`,
     `- [240 V outlets](${abs('/compare/best-for-240v/')}): models with a published 240 V class input, ranked by published mild-steel thickness.`,
     `- [Multi-process](${abs('/compare/best-multiprocess/')}): models whose cited page names three or more processes.`,
-    `- [Compare](${abs('/compare/')}): one page per model pair at /compare/{first}-vs-{second}/.`,
+    `- [Compare](${abs('/compare/')}): pair pages only where two machines share a process and a voltage and the page is not a repeat of another pair. Other combinations are not separate URLs.`,
     '',
     '## About this site',
     '',

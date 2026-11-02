@@ -11,7 +11,7 @@ const pages = [
   ['page-240v', '240 V outlets', '230 V and 240 V, as the sheet prints them.'],
   ['page-multi', 'Multi-process', 'Three named processes, or it is not on the list.'],
   ['page-how-we-verify', 'How we verify', 'A source URL on every row.'],
-  ['page-about', 'About', 'WeldFacts editorial team.'],
+  ['page-about', 'About', 'Manufacturer specs. No staff byline.'],
   ['page-contact', 'Contact', 'contact@weldfacts.com'],
   ['page-privacy', 'Privacy', 'No ads. The check stays in the browser.'],
   ['page-terms', 'Terms', 'The manufacturer manual still governs the machine.'],
@@ -27,13 +27,12 @@ function esc(value) {
 function svg(title, sub) {
   return `<?xml version="1.0" encoding="UTF-8"?>
 <svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
-  <rect width="1200" height="630" fill="#121418"/>
-  <rect x="0" y="0" width="1200" height="16" fill="#ff8a1f"/>
-  <text x="72" y="180" fill="#ff8a1f" font-family="Arial Narrow, Arial, sans-serif" font-size="28" font-weight="700" letter-spacing="6">WELDFACTS.COM</text>
-  <text x="72" y="320" fill="#f4f0e8" font-family="Arial Narrow, Arial, sans-serif" font-size="68" font-weight="700">${esc(title)}</text>
-  <text x="72" y="400" fill="#c9c2b6" font-family="Arial, sans-serif" font-size="30">${esc(sub)}</text>
-  <rect x="72" y="480" width="220" height="8" fill="#ff8a1f"/>
-  <rect x="300" y="480" width="80" height="8" fill="#ff8a1f" opacity="0.55"/>
+  <rect width="1200" height="630" fill="#ffffff"/>
+  <rect x="0" y="0" width="1200" height="12" fill="#c2410c"/>
+  <text x="72" y="180" fill="#c2410c" font-family="Arial, sans-serif" font-size="28" font-weight="700">WeldFacts.com</text>
+  <text x="72" y="320" fill="#1c1917" font-family="Arial, sans-serif" font-size="64" font-weight="700">${esc(title)}</text>
+  <text x="72" y="410" fill="#3f3f46" font-family="Arial, sans-serif" font-size="28">${esc(sub)}</text>
+  <rect x="72" y="480" width="180" height="8" fill="#c2410c"/>
 </svg>`;
 }
 

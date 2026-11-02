@@ -1,3 +1,5 @@
+import { PUBLISHED_PAIRS } from './publishedPairs.ts';
+
 /**
  * Manufacturer specs read on 2 November 2026.
  * A number appears here only when the cited page stated it.
@@ -1073,12 +1075,28 @@ export function steelMax(m: Model, voltage: Volt): number | null {
 
 export type Pair = { slug: string; a: Model; b: Model };
 
+function shares<T>(a: T[], b: T[]): boolean {
+  return a.some((item) => b.includes(item));
+}
+
+/** Alternatives that share a process and a voltage. Other combinations are not pages. */
 export function pairs(): Pair[] {
+  const index = new Map(models.map((m, i) => [m.slug, i]));
   const out: Pair[] = [];
-  for (let i = 0; i < models.length; i++) {
-    for (let j = i + 1; j < models.length; j++) {
-      out.push({ slug: `${models[i].slug}-vs-${models[j].slug}`, a: models[i], b: models[j] });
+  const seen = new Set<string>();
+  for (const [left, right] of PUBLISHED_PAIRS) {
+    const ia = index.get(left);
+    const ib = index.get(right);
+    if (ia == null || ib == null) throw new Error(`Unknown comparison slug: ${left} vs ${right}`);
+    const a = models[Math.min(ia, ib)];
+    const b = models[Math.max(ia, ib)];
+    if (!shares(a.procs, b.procs) || !shares(a.voltages, b.voltages)) {
+      throw new Error(`${a.slug} vs ${b.slug} does not share a process and a voltage`);
     }
+    const slug = `${a.slug}-vs-${b.slug}`;
+    if (seen.has(slug)) throw new Error(`Duplicate comparison ${slug}`);
+    seen.add(slug);
+    out.push({ slug, a, b });
   }
   return out;
 }

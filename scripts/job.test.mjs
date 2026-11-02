@@ -1,4 +1,5 @@
-import { getModel } from '../src/data/models.ts';
+import { getModel, models, pairs } from '../src/data/models.ts';
+import { modelBlocks } from '../src/lib/guide.ts';
 import { evaluateJob } from '../src/lib/job.ts';
 import { dutyMark, fitTokens } from '../src/lib/plate.ts';
 
@@ -72,5 +73,18 @@ const fit210 = fitTokens(getModel('handler-210i'));
 if (!fit210.includes('120-15') || !fit210.includes('240-50')) throw new Error('210i should stay on both chips');
 if (fitTokens(getModel('millermatic-142')).includes('120-15')) throw new Error('142 needs 20 A, so 15 A fails');
 if (!fitTokens(getModel('thunderbolt-210-mv')).includes('240-50')) throw new Error('Thunderbolt 44.9 A fits a 50 A breaker as a warning');
+
+const published = pairs();
+if (published.length < 10 || published.length > 40) throw new Error(`unexpected pair count ${published.length}`);
+for (const pair of published) {
+  const shareP = pair.a.procs.some((p) => pair.b.procs.includes(p));
+  const shareV = pair.a.voltages.some((v) => pair.b.voltages.includes(v));
+  if (!shareP || !shareV) throw new Error(`${pair.slug} is not a useful pair`);
+}
+for (const model of models) {
+  const text = modelBlocks(model).flatMap((block) => block.paragraphs).join(' ');
+  if (text.split(/\s+/).length < 180) throw new Error(`${model.slug} guide is short`);
+  if (/—|actually|honestly|\bhonest\b|editorial team/i.test(text)) throw new Error(`${model.slug} guide has a banned tell`);
+}
 
 console.log('job tests ok');

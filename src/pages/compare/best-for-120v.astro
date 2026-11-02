@@ -1,9 +1,8 @@
 ---
 import Base from '../../layouts/Base.astro';
-import Byline from '../../components/Byline.astro';
 import Crumbs from '../../components/Crumbs.astro';
 import { models, modelPath, steelMax } from '../../data/models';
-import { fitTokens } from '../../lib/plate';
+import { dutyMark, fitTokens } from '../../lib/plate';
 import { SITE } from '../../lib/site';
 import { crumbLd, webPageLd } from '../../lib/ld';
 
@@ -29,9 +28,15 @@ const jsonld = [
   <div class="wrap">
     <div class="pagehead">
       <Crumbs crumbs={crumbs} />
-      <h1>120 V on the sheet</h1>
-      <p class="lede">Machines whose input line includes 120 V. Thickest published mild steel first. No thickness number sorts last. The chip still drops a 15 A fail.</p>
-      <Byline />
+      <h1>Welders for a 120 V outlet</h1>
+      <p class="lede">Machines whose published input includes 120 V. The order is the mild-steel thickness stored for that voltage.</p>
+    </div>
+    <div class="prose">
+      <p>110 V and 115 V count as this list. 240 V-only machines stay on the <a href="/compare/best-for-240v/">240 V list</a>. A blank thickness sorts after every machine that has one, in name order. The thickness column is the inch figure the job check stores for mild steel at 120 V. Where the sheet calls that figure a single pass and does not print a second maximum, a thicker job warns. Gauge ranges are not converted into inches, so a machine that prints aluminum only as a gauge does not get an aluminum inch in this column.</p>
+      <p>Duty text in the table is the manufacturer's sentence, not a rank. A 60% point and a 20% point are both copied. The minute reading of each percent is on the model page. Input current is not in this table. A machine can lead on thickness and still fail a 15 A breaker. The outlet button hides that failure. Use the <a href="/which-welder/">job check</a> when you know the breaker size.</p>
+      {ranked[0]?.thick != null && (
+        <p>The first row with a stored thickness is {ranked[0].m.name} at {ranked[0].thick} in. {ranked.filter((row) => row.thick == null).length} machines on this list have no mild-steel inch figure, so they sort last{ranked.filter((row) => row.thick == null).length ? `: ${ranked.filter((row) => row.thick == null).map((row) => row.m.name).join(', ')}` : ''}.</p>
+      )}
     </div>
     <div class="tblwrap">
       <table>
@@ -42,7 +47,7 @@ const jsonld = [
               <td>{i + 1}</td>
               <td><a href={modelPath(row.m)}>{row.m.name}</a></td>
               <td>{row.thick == null ? 'Not published' : `${row.thick} in max`}</td>
-              <td>{row.m.duty.published ? row.m.duty.text : 'Not published'}</td>
+              <td>{dutyMark(row.m.duty.text, 120, row.m.voltages)?.clause ?? (row.m.duty.published ? row.m.duty.text : 'Not published')}</td>
             </tr>
           ))}
         </tbody>

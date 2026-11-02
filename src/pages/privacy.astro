@@ -1,6 +1,5 @@
 ---
 import Base from '../layouts/Base.astro';
-import Byline from '../components/Byline.astro';
 import Crumbs from '../components/Crumbs.astro';
 import { SITE } from '../lib/site';
 import { crumbLd, webPageLd } from '../lib/ld';
@@ -14,13 +13,16 @@ const jsonld = [webPageLd('Privacy policy', '/privacy/', desc, SITE.checked), cr
     <div class="pagehead">
       <Crumbs crumbs={crumbs} />
       <h1>Privacy</h1>
-      <Byline />
     </div>
-    <p>Static site. No account. The job check runs in the browser. The numbers you type are not sent here. The outlet chip is stored in localStorage on your machine.</p>
+    <p>WeldFacts.com is a static site. There is no account, no newsletter, and no comment form that posts back to a database. Pages are files. Reading them does not create a profile on this site.</p>
+    <h2>What stays on your machine</h2>
+    <p>The job check runs in the browser. Outlet, breaker, metal, thickness, and process are used to compare against the spec data already in the page. Those values are not sent to WeldFacts. The outlet button remembers 120 V / 15 A or 240 V / 50 A in localStorage under the key <span class="mono">wf-outlet</span>. That value never leaves the browser unless you clear site data. There is no account cookie and no analytics cookie set by this site.</p>
     <h2>Mail</h2>
-    <p>The contact page opens your mail app to {SITE.email}. This site does not receive the message.</p>
-    <h2>Cookies</h2>
-    <p>No analytics cookie. No ad script. Cloudflare may keep request logs. Amazon may set cookies if you follow a search link.</p>
-    <p><a href={`mailto:${SITE.email}`}>{SITE.email}</a></p>
+    <p>The contact page is a <span class="mono">mailto</span> link to {SITE.email}. Your mail app composes the message. This website does not receive the form post, does not log the text, and does not add you to a list. If you send mail, the inbox that receives it is {SITE.email}. Do not include passwords or payment numbers. They are not needed.</p>
+    <h2>Hosting and Amazon</h2>
+    <p>The site is hosted as static files. The host may keep ordinary request logs, such as IP address, user agent, and URL, under its own policy. WeldFacts does not add a tracker on top of that. There is no advertising script. If you follow an Amazon search link, you leave this site and Amazon may set its own cookies. That relationship is described in the <a href="/affiliate-disclosure/">affiliate disclosure</a>. WeldFacts does not receive your Amazon order.</p>
+    <h2>What this site does not collect</h2>
+    <p>No name is required to read a page. No email address is required to use the job check. There is no payment form. There is no precise location request, no camera request, and no microphone request. The permissions policy in the host headers turns those features off. Children are not asked to create an account because there is no account.</p>
+    <p>Questions about this policy go to <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.</p>
   </div>
 </Base>

@@ -1,22 +1,20 @@
 ---
 import Base from '../layouts/Base.astro';
-import Byline from '../components/Byline.astro';
 import Crumbs from '../components/Crumbs.astro';
 import { SITE } from '../lib/site';
 import { crumbLd, webPageLd } from '../lib/ld';
 
-const crumbs = [{ name: 'How we verify', path: '/how-we-verify/' }];
+const crumbs = [{ name: 'Source rules', path: '/how-we-verify/' }];
 const desc = 'How WeldFacts checks welder specs: manufacturer pages and manuals only, a citation on every row, and no estimated amps or thickness.';
-const jsonld = [webPageLd('How we verify welder specs', '/how-we-verify/', desc, SITE.checked), crumbLd(crumbs)];
+const jsonld = [webPageLd('How WeldFacts checks welder specs', '/how-we-verify/', desc, SITE.checked), crumbLd(crumbs)];
 ---
-<Base title="How we verify welder specs" description={desc} path="/how-we-verify/" og="/og/page-how-we-verify.png" jsonld={jsonld}>
+<Base title="How WeldFacts checks welder specs" description={desc} path="/how-we-verify/" og="/og/page-how-we-verify.png" jsonld={jsonld}>
   <div class="wrap prose">
     <div class="pagehead">
       <Crumbs crumbs={crumbs} />
-      <h1>How we verify</h1>
-      <Byline />
+      <h1>Source rules</h1>
     </div>
-    <p>A number is a fact only when the manufacturer page or that maker's manual states it. The row links the URL. 2 November 2026 is the read date.</p>
+    <p>A number is kept only when the manufacturer page or that maker's manual states it. The row links the URL and names the place on that page. 2 November 2026 is the read date for the current set. This page is the only copy of the rules. Model pages link here instead of repeating a byline.</p>
     <h2>Sources</h2>
     <ul>
       <li>The maker's product page, including a spec list on that page.</li>
@@ -25,17 +23,19 @@ const jsonld = [webPageLd('How we verify welder specs', '/how-we-verify/', desc,
     </ul>
     <p>Retail pages, forums, and other roundups are not sources. When one brochure disagrees with itself, both sentences stay. Rebel EMP 235ic says 53 lb in the intro and 63 lb in the spec table. The weight sort uses 63 lb. The cell shows both.</p>
     <h2>Missing fields</h2>
-    <p>The cell says "Not published by manufacturer." Tip catalogs are not a wire range unless the sheet says the machine is set up for those wires. An example about a 10 minute cycle is not a new duty rating. E7018 is not turned into the word steel.</p>
+    <p>The cell says "Not published by manufacturer." A tip catalog is not a wire range unless the sheet says the machine is set up for those wires. An example about a 10-minute period is not a new duty rating. A rod classification is not turned into the name of a metal unless the page names that metal.</p>
     <h2>Outlet and thickness</h2>
-    <p>208-240 V, 230 V, and 240 V match the 240 V chip. 110 V, 115 V, and 120 V match the 120 V chip. 460 V and 575 V match neither.</p>
-    <p>Input current at rated output is not a breaker size. Above the breaker you set: fail. Fits, and the sheet names no breaker: warning. A pass needs a printed breaker size. Handler 210i has 15 A and 20 A rows. The 215ic manual also prints a 30 A time-delay max and a 50 A normal-fuse max.</p>
+    <p>208-240 V, 230 V, and 240 V match the 240 V button. 110 V, 115 V, and 120 V match the 120 V button. 460 V and 575 V match neither.</p>
+    <p>Input current at rated output is not a breaker size. Above the breaker you enter: fail. Fits, and the sheet names no breaker: warning. A pass needs a printed breaker size. Handler 210i has 15 A and 20 A rows. The 215ic manual also prints a 30 A time-delay maximum and a 50 A normal-fuse maximum.</p>
     <p>Single pass with no second maximum: a thicker job warns. A printed maximum that is not called single pass: a thicker job fails. Gauge is not converted to inches.</p>
-    <p>The 10 minute bar reads the first percent already printed for that voltage. It does not pick a second duty point and it does not invent one.</p>
+    <p>The duty bar reads the first percent already printed for that voltage. It does not pick a second duty point and it does not invent one. On a model page, each percent in the duty cell is also written as minutes of a 10-minute period. That minute split is a reading of the printed percent. It is not stored as a separate rating.</p>
     <p>Aluminum on TIG passes only when the page names aluminum. DC TIG that never names aluminum fails that metal. Any other unnamed metal is left unscored.</p>
     <h2>Two files</h2>
     <p>Harbor Freight has two manuals for Unlimited 200, item 57862. Input current does not match. This site cites 57862-193175459367.pdf only.</p>
+    <h2>Pairs</h2>
+    <p>A comparison URL exists only when two machines share a process and a voltage and the page is not a near-copy of another comparison. Other combinations are not generated. Open the two model pages instead.</p>
     <h2>Prices</h2>
     <p>No prices. Amazon links are searches. Tag weldfacts-20. No ASIN is verified in this version.</p>
-    <p><a href="/contact/">Corrections</a>.</p>
+    <p><a href="/contact/">Corrections</a> go to {SITE.email}.</p>
   </div>
 </Base>

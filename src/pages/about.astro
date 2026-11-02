@@ -1,12 +1,12 @@
 ---
 import Base from '../layouts/Base.astro';
-import Byline from '../components/Byline.astro';
 import Crumbs from '../components/Crumbs.astro';
+import { models, brands } from '../data/models';
 import { SITE } from '../lib/site';
 import { crumbLd, orgLd, webPageLd } from '../lib/ld';
 
 const crumbs = [{ name: 'About', path: '/about/' }];
-const desc = 'WeldFacts.com is an independent reference for manufacturer welder specs and an outlet check. Pages are by the WeldFacts editorial team.';
+const desc = 'WeldFacts.com publishes manufacturer welder specs and an outlet check. No staff names are attached to a page. Corrections go to contact@weldfacts.com.';
 const jsonld = [
   webPageLd('About WeldFacts.com', '/about/', desc, SITE.checked),
   crumbLd(crumbs),
@@ -18,18 +18,14 @@ const jsonld = [
   <div class="wrap prose">
     <div class="pagehead">
       <Crumbs crumbs={crumbs} />
-      <h1>About</h1>
-      <Byline />
+      <h1>About WeldFacts.com</h1>
     </div>
-    <p>WeldFacts prints welder specs from manufacturer pages and manuals. The outlet chip and the job check use those numbers.</p>
-    <h2>Who</h2>
-    <p>Published by WeldFacts. The byline is the WeldFacts editorial team. No personal name on a transcription. Judge the source link.</p>
-    <h2>The date</h2>
-    <p>Checked 2 November 2026 means that is when the cited pages were read. A layout change does not move the date.</p>
-    <h2>Money</h2>
-    <p>Free to read. Amazon tag weldfacts-20. The tag does not change a spec. See the <a href="/affiliate-disclosure/">affiliate disclosure</a>.</p>
-    <h2>Not this</h2>
-    <p>Not a dealer. Not a shop. Not an electrical inspection. The manual that ships with the machine still governs setup.</p>
-    <p><a href={`mailto:${SITE.email}`}>{SITE.email}</a></p>
+    <p>WeldFacts.com is a static reference for welder specifications. The numbers come from manufacturer product pages, spec-sheet PDFs, and owner's manuals. The current set was read on 2 November 2026. A change to the layout of this site does not move that date. The date moves when those cited pages are read again.</p>
+    <p>The set has {models.length} machines from {brands().map((b) => b.name).join(', ')}. A brand that is not in that list was not transcribed for this version. It was not left out as a ranking. Each model page repeats process, output amp range, rated duty cycle, input, wire or rod size, weight, and material thickness. Every cell links to the page the wording came from. When that page does not state the field, the cell says "Not published by manufacturer."</p>
+    <p>Retail listings, forums, and other roundups are not sources. When one brochure disagrees with itself, both sentences stay. The Rebel EMP 235ic says 53 lb in the introduction and 63 lb in the specifications table. The weight sort uses 63 lb. The cell shows both. Harbor Freight item 57862 has two manuals that disagree on input current. The Unlimited 200 page cites one file and names the other so the two are not mixed.</p>
+    <p>The outlet buttons and the job check use those published numbers. They compare a 120 V / 15 A outlet or a 240 V / 50 A outlet, a metal, a thickness, and a process with the sheet. They do not inspect the wiring in a building. A pass means the sheet printed a figure the checker could match. It does not mean the breaker in the wall is the size that was typed. The check runs in the browser. The numbers you type are not uploaded.</p>
+    <p>WeldFacts is not a dealer and not a repair shop. It is not Lincoln Electric, Miller, Hobart, ESAB, PrimeWeld, Harbor Freight, or Amazon. Product names identify the machine the sheet describes. They belong to their owners.</p>
+    <p>The site is free to read. There is no account and no newsletter. There is no display advertising. Amazon links use the Associates tag weldfacts-20. The tag does not change a specification. How those links are built is on the <a href="/affiliate-disclosure/">affiliate disclosure</a>. How a cell is accepted or left blank is on the <a href="/how-we-verify/">source rules</a> page.</p>
+    <p>Pages are published by WeldFacts. No personal name is attached to a transcription. The source link is the record. Send a correction with the model name, the figure you question, and the manufacturer URL to <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.</p>
   </div>
 </Base>

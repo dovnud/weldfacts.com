@@ -1,9 +1,8 @@
 ---
 import Base from '../../layouts/Base.astro';
-import Byline from '../../components/Byline.astro';
 import Crumbs from '../../components/Crumbs.astro';
 import { models, modelPath, steelMax } from '../../data/models';
-import { fitTokens } from '../../lib/plate';
+import { dutyMark, fitTokens } from '../../lib/plate';
 import { SITE } from '../../lib/site';
 import { crumbLd, webPageLd } from '../../lib/ld';
 
@@ -29,9 +28,15 @@ const jsonld = [
   <div class="wrap">
     <div class="pagehead">
       <Crumbs crumbs={crumbs} />
-      <h1>240 V class on the sheet</h1>
-      <p class="lede">208-240 V, 230 V, or 240 V. 460 V and 575 V stay off. Thickest published mild steel first. The 50 A chip drops a draw above 50 A.</p>
-      <Byline />
+      <h1>Welders for a 240 V outlet</h1>
+      <p class="lede">Machines whose published input includes 208 V, 230 V, or 240 V. The order is the mild-steel thickness stored for that class.</p>
+    </div>
+    <div class="prose">
+      <p>460 V and 575 V do not put a machine on this list by themselves. A sheet that offers those voltages beside a 230 V or 240 V row is included because of the 240 V class row. The 50 A button still hides a machine whose published draw at that class is above 50 A. The Millermatic 252, the Ironman 240, and the Power MIG 260 are examples: each prints an input above 50 A at the 240 V class rating, so the button drops them even though they are 240 V machines.</p>
+      <p>Thickness blanks sort last. Duty text is copied from the sheet and is not a score. A dual-voltage machine appears here and on the <a href="/compare/best-for-120v/">120 V list</a>. The thickness number can differ by voltage. This column uses the 240 V figure when the sheet splits them, and the unscoped figure when the sheet prints one maximum for the machine.</p>
+      {ranked[0]?.thick != null && (
+        <p>The first row with a stored thickness is {ranked[0].m.name} at {ranked[0].thick} in. Machines with no mild-steel inch figure sort after that: {ranked.filter((row) => row.thick == null).map((row) => row.m.name).join(', ') || 'none'}.</p>
+      )}
     </div>
     <div class="tblwrap">
       <table>
@@ -42,7 +47,7 @@ const jsonld = [
               <td>{i + 1}</td>
               <td><a href={modelPath(row.m)}>{row.m.name}</a></td>
               <td>{row.thick == null ? 'Not published' : `${row.thick} in max`}</td>
-              <td>{row.m.duty.published ? row.m.duty.text : 'Not published'}</td>
+              <td>{dutyMark(row.m.duty.text, 240, row.m.voltages)?.clause ?? (row.m.duty.published ? row.m.duty.text : 'Not published')}</td>
             </tr>
           ))}
         </tbody>

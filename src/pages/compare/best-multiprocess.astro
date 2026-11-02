@@ -1,6 +1,5 @@
 ---
 import Base from '../../layouts/Base.astro';
-import Byline from '../../components/Byline.astro';
 import Crumbs from '../../components/Crumbs.astro';
 import { models, modelPath } from '../../data/models';
 import { fitTokens } from '../../lib/plate';
@@ -25,9 +24,13 @@ const jsonld = [
   <div class="wrap">
     <div class="pagehead">
       <Crumbs crumbs={crumbs} />
-      <h1>Three processes, named</h1>
-      <p class="lede">MIG and flux-cored count as two. A third named process gets the row. Order is the count, then the name.</p>
-      <Byline />
+      <h1>Multi-process welders</h1>
+      <p class="lede">Machines whose cited page names at least three processes. MIG and flux-cored count as two. A third named process puts the machine on this list.</p>
+    </div>
+    <div class="prose">
+      <p>Order is the length of that process list, then the name. The list does not prefer a brand. DC TIG and AC TIG are not separate rows in the count. A page that says AC/DC TIG still counts TIG once. Stick is its own process. A wire welder that never names stick or TIG stays off this list even if it names pulsed MIG.</p>
+      <p>Naming a process is not the same as publishing a thickness or a duty point for it. Several multi-process sheets print MIG thickness and leave stick and TIG thickness off. The model page says which of those cells exist. Aluminum TIG passes only when the page names aluminum. DC TIG that does not name aluminum fails that metal. Input class in the table is the voltage set, 120 V, 240 V, or both. The outlet button can still hide a row that fails 15 A or 50 A.</p>
+      <p>There are {ranked.length} machines on this list: {ranked.map((m) => m.name).join(', ')}. Open one when you need the duty line for each process, not only the count.</p>
     </div>
     <div class="tblwrap">
       <table>
