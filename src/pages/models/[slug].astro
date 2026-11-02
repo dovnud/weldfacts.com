@@ -1,13 +1,14 @@
 ---
 import Base from '../../layouts/Base.astro';
-import Byline from '../../components/Byline.astro';
 import Crumbs from '../../components/Crumbs.astro';
 import SpecTable from '../../components/SpecTable.astro';
 import BuyBlock from '../../components/BuyBlock.astro';
-import FaqList from '../../components/FaqList.astro';
+import Blocks from '../../components/Blocks.astro';
 import Nameplate from '../../components/Nameplate.astro';
-import { models, modelPath } from '../../data/models';
-import { modelFaqs, productLd, specRows } from '../../lib/modelView';
+import { modelPath, pairs } from '../../data/models';
+import { models } from '../../data/models';
+import { modelBlocks, modelFaqs } from '../../lib/guide';
+import { productLd, specRows } from '../../lib/modelView';
 import { SITE } from '../../lib/site';
 import { crumbLd, webPageLd } from '../../lib/ld';
 
@@ -18,7 +19,9 @@ const { model: m } = Astro.props;
 const path = modelPath(m);
 const crumbs = [{ name: 'Models', path: '/models/' }, { name: m.name, path }];
 const desc = m.summary;
+const blocks = modelBlocks(m);
 const faqs = modelFaqs(m);
+const related = pairs().filter((p) => p.a.slug === m.slug || p.b.slug === m.slug);
 const jsonld = [
   webPageLd(`${m.name} specs`, path, desc, SITE.checked),
   crumbLd(crumbs),
@@ -31,27 +34,31 @@ const rows = specRows(m);
   <div class="wrap">
     <div class="pagehead">
       <Crumbs crumbs={crumbs} />
-      <p class="kicker">{m.brand}{m.sku ? ` · ${m.sku}` : ''}</p>
       <h1>{m.name}</h1>
-      <Byline />
+      <p class="lede">{m.summary}</p>
+      <p class="small muted">{m.brand}{m.sku ? `, SKU ${m.sku}` : ''}. <a href={`/brands/${m.brandSlug}/`}>{m.brand} lineup</a></p>
     </div>
     <Nameplate model={m} />
     <BuyBlock slug={m.slug} query={m.searchQuery} name={m.name} />
-    <h2>Sheet</h2>
-    <p class="small muted">Copied from the cited page. Not taken from another model or a review.</p>
+    <Blocks blocks={blocks} />
+    <h2>Specifications</h2>
+    <p class="small">Each cell is the wording from the cited page.</p>
     <SpecTable rows={rows} />
-    {m.notes.length > 0 && (
-      <>
-        <h2>Notes on the source</h2>
-        <ul>{m.notes.map((n) => <li>{n}</li>)}</ul>
-      </>
-    )}
     <p>
       <a href={m.productUrl} rel="noopener">Manufacturer page</a>
       · <a href={`/which-welder/?model=${m.slug}`}>Job check</a>
       · <a href={`/brands/${m.brandSlug}/`}>{m.brand}</a>
     </p>
-    <h2>From the table</h2>
-    <FaqList items={faqs} />
+    {related.length > 0 && (
+      <>
+        <h2>Comparisons</h2>
+        <ul>
+          {related.map((p) => {
+            const other = p.a.slug === m.slug ? p.b : p.a;
+            return <li><a href={`/compare/${p.slug}/`}>{m.name} vs {other.name}</a></li>;
+          })}
+        </ul>
+      </>
+    )}
   </div>
 </Base>

@@ -1,25 +1,32 @@
 ---
 import Base from '../../layouts/Base.astro';
-import Byline from '../../components/Byline.astro';
 import Crumbs from '../../components/Crumbs.astro';
-import { models } from '../../data/models';
+import { models, pairs } from '../../data/models';
 import { SITE } from '../../lib/site';
 import { crumbLd, webPageLd } from '../../lib/ld';
 
 const crumbs = [{ name: 'Compare', path: '/compare/' }];
-const desc = 'Compare two welders on the manufacturer figures only. 120 V, 240 V, and multi-process lists use those same figures.';
+const desc = 'Side-by-side welder specs for pairs that share a process and a voltage. Other combinations are not separate pages.';
+const list = pairs();
+const same = list.filter((p) => p.a.brandSlug === p.b.brandSlug);
+const cross = list.filter((p) => p.a.brandSlug !== p.b.brandSlug);
 const jsonld = [webPageLd('Compare welder specs', '/compare/', desc, SITE.checked), crumbLd(crumbs)];
+const brandsInSame = [...new Set(same.map((p) => p.a.brand))];
 ---
 <Base title="Compare welder specs" description={desc} path="/compare/" nav="compare" og="/og/page-compare.png" jsonld={jsonld}>
   <div class="wrap">
     <div class="pagehead">
       <Crumbs crumbs={crumbs} />
-      <h1>Two sheets</h1>
-      <p class="lede">Same fields, two citations. No score.</p>
-      <Byline />
+      <h1>Compare welder specs</h1>
+      <p class="lede">A pair page quotes both sheets and says which published limit is larger. It does not invent a score.</p>
+    </div>
+    <div class="prose">
+      <p>Every machine against every other machine was a few hundred near-copy pages. Most of them shared one model and repeated its spec sheet. Those URLs are not generated. A pair stays only when the two machines share a process and a voltage, and when the page does not repeat another pair that already carries the same sheet.</p>
+      <p>Use the lists under this form for the pairs that remain. If you pick two models that do not have a page, the note under the form links to both model pages instead of opening a missing URL. The <a href="/compare/best-for-120v/">120 V list</a>, the <a href="/compare/best-for-240v/">240 V list</a>, and the <a href="/compare/best-multiprocess/">multi-process list</a> rank the whole set by a published figure. They are not pair pages.</p>
+      <p>Same-brand pairs cover a step up or down inside {brandsInSame.join(', ')}. Cross-brand pairs are the alternatives worth setting next to each other: a 120 V wire welder against another 120 V wire welder, a shop MIG against a shop MIG, a multi-process machine against another multi-process machine, an AC/DC TIG against another AC/DC TIG. A TIG power source is not paired with a MIG cart unless that pair is in the list.</p>
     </div>
     <form class="finder" id="pair-form">
-      <div class="finder-head">Pair <span>Order follows the model list</span></div>
+      <div class="finder-head">Choose two models <span>Only listed pairs open a page</span></div>
       <div class="finder-body">
         <div class="f-grid">
           <div>
@@ -31,28 +38,53 @@ const jsonld = [webPageLd('Compare welder specs', '/compare/', desc, SITE.checke
             <select id="b" name="b">{models.map((m, i) => <option value={m.slug} selected={i === 1}>{m.name}</option>)}</select>
           </div>
         </div>
-        <button class="f-btn" type="submit">Open</button>
+        <button class="f-btn" type="submit">Open comparison</button>
+        <p id="pair-note" class="note" hidden></p>
       </div>
     </form>
-    <ul class="rule-list">
-      <li><a href="/compare/best-for-120v/">120 V list</a></li>
-      <li><a href="/compare/best-for-240v/">240 V list</a></li>
-      <li><a href="/compare/best-multiprocess/">Multi-process list</a></li>
-    </ul>
+    <div class="pair-groups">
+      <div>
+        <h2>Same brand</h2>
+        <ul>
+          {same.map((p) => <li><a href={`/compare/${p.slug}/`}>{p.a.name} vs {p.b.name}</a></li>)}
+        </ul>
+      </div>
+      <div>
+        <h2>Cross brand</h2>
+        <ul>
+          {cross.map((p) => <li><a href={`/compare/${p.slug}/`}>{p.a.name} vs {p.b.name}</a></li>)}
+        </ul>
+      </div>
+    </div>
   </div>
 </Base>
 <script>
-  import { models } from '../../data/models';
+  import { models, pairs, modelPath } from '../../data/models';
   const form = document.getElementById('pair-form') as HTMLFormElement;
+  const note = document.getElementById('pair-note') as HTMLElement;
+  const allowed = new Set(pairs().map((p) => p.slug));
   form.addEventListener('submit', (ev) => {
     ev.preventDefault();
     const data = new FormData(form);
     const a = String(data.get('a'));
     const b = String(data.get('b'));
-    if (a === b) return;
+    note.hidden = true;
+    note.textContent = '';
+    if (a === b) {
+      note.hidden = false;
+      note.textContent = 'Pick two different models.';
+      return;
+    }
     const ia = models.findIndex((m) => m.slug === a);
     const ib = models.findIndex((m) => m.slug === b);
     const slug = ia < ib ? `${a}-vs-${b}` : `${b}-vs-${a}`;
+    if (!allowed.has(slug)) {
+      const left = models[ia];
+      const right = models[ib];
+      note.hidden = false;
+      note.innerHTML = `No comparison page for these two. Open <a href="${modelPath(left)}">${left.name}</a> and <a href="${modelPath(right)}">${right.name}</a>.`;
+      return;
+    }
     location.href = `/compare/${slug}/`;
   });
 </script>

@@ -84,7 +84,7 @@ export function plugLine(input: string): string {
 
 export const PROC_LABEL: Record<string, string> = {
   mig: 'MIG',
-  flux: 'FCAW',
-  stick: 'STICK',
+  flux: 'Flux',
+  stick: 'Stick',
   tig: 'TIG',
 };

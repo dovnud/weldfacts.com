@@ -1,9 +1,8 @@
 ---
 import Base from '../../layouts/Base.astro';
-import Byline from '../../components/Byline.astro';
 import Crumbs from '../../components/Crumbs.astro';
 import MachineTable from '../../components/MachineTable.astro';
-import { models } from '../../data/models';
+import { models, brands } from '../../data/models';
 import { SITE } from '../../lib/site';
 import { crumbLd, webPageLd } from '../../lib/ld';
 
@@ -15,9 +14,14 @@ const jsonld = [webPageLd('Welder models', '/models/', desc, SITE.checked), crum
   <div class="wrap">
     <div class="pagehead">
       <Crumbs crumbs={crumbs} />
-      <h1>{models.length} models</h1>
-      <p class="lede">Same fields on every row. Sort the headers. The outlet chip filters the body.</p>
-      <Byline />
+      <h1>Welder models</h1>
+      <p class="lede">One row per machine. The same fields are on every model page, with the manufacturer sentence and the URL it came from.</p>
+    </div>
+    <div class="prose">
+      <p>Brand is the name on the cited page. Model opens the spec page. Process is the list stored from that page: MIG, flux-cored, stick, and TIG. A machine with three or more of those is also on the <a href="/compare/best-multiprocess/">multi-process list</a>. Input is 120 V, 240 V, or both. On this site, 110 V and 115 V count as 120 V, and 208 V, 230 V, and 240 V count as 240 V. 460 V and 575 V do not match either outlet button.</p>
+      <p>Weight is the single published pound figure when the sheet prints one. Two weights, such as a machine weight and a weight with running gear, stay in the cell on the model page. The sort uses the single figure. "n/p" means that figure was not published. Duty is the first percent the duty sentence prints for the outlet button you have selected. It is not a score. The full sentence, including every other percent, is on the model page.</p>
+      <p>The outlet column is the circuit check for 120 V / 15 A or 240 V / 50 A. Pass means the sheet names a breaker the draw fits. Warn means the draw fits, or only partly covers the outlet, and no breaker size earns a pass. Fail means the voltage is missing or the draw or the smallest named breaker is above the outlet. "n/a" means there is no input-ampere row to score.</p>
+      <p>Sort any column. The outlet button hides failures and leaves warnings on screen. {brands().map((b) => b.name).join(', ')} are linked from the footer. Open a brand when you want the lineup note before the table. This index is the full set of {models.length} machines.</p>
     </div>
     <MachineTable rows={models} />
   </div>

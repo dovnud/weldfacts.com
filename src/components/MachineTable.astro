@@ -7,7 +7,7 @@ const { rows } = Astro.props;
 const shown120 = rows.filter((m) => fitTokens(m).split(/\s+/).includes('120-15')).length;
 ---
 <div class="sheet-tools">
-  <p class="count" data-live-count>{shown120} of {rows.length}</p>
+  <p class="count" data-live-count>{shown120} of {rows.length} shown for this outlet</p>
   <p class="small muted">Outlet chip hides a fail. Warn and unpublished input stay.</p>
 </div>
 <div class="tblwrap">

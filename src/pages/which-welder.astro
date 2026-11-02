@@ -1,6 +1,5 @@
 ---
 import Base from '../layouts/Base.astro';
-import Byline from '../components/Byline.astro';
 import Crumbs from '../components/Crumbs.astro';
 import JobForm from '../components/JobForm.astro';
 import FaqList from '../components/FaqList.astro';
@@ -37,9 +36,13 @@ const jsonld = [
   <div class="wrap">
     <div class="pagehead">
       <Crumbs crumbs={crumbs} />
-      <h1>Job check</h1>
-      <p class="lede">Outlet, breaker, metal, thickness, process. Pass means the sheet printed the number. Partial means a figure is missing or only partly covers the outlet.</p>
-      <Byline />
+      <h1>Which welder fits this outlet</h1>
+      <p class="lede">Enter an outlet, a breaker size, a metal, a thickness, and a process. The result uses published ratings only.</p>
+    </div>
+    <div class="prose">
+      <p>Pass means the sheet printed a figure the checker could match. Partial means a needed figure is missing or only partly covers the outlet, so the machine is not cleared and not thrown out. Out means at least one check failed: the voltage is not published, the process is not named, the thickness is over a hard maximum, or the circuit numbers do not fit.</p>
+      <p>Leave the model menu on "All on this outlet" to score the whole list. Pick one model, or open this page from a model link, to score that machine only. The outlet button at the top of the site sets the starting voltage and breaker. You can change both fields before you run the check. Nothing you type is sent to a server. The calculation stays in the browser.</p>
+      <p>A worked circuit example is the Handler 210i. It publishes a 120 V, 15 A row at 13.8 A input and a 120 V, 20 A row at 27.6 A input. Enter 15 A and the check can use the 15 A row. Enter 20 A and it can use the higher row. The Millermatic 142 publishes 20 A input and no 15 A row, so 15 A fails. The Power MIG 260 publishes 55 A at 230 V and no 120 V input, so 120 V fails on voltage and 50 A fails on the draw.</p>
     </div>
     <JobForm />
     <h2>Rules</h2>

@@ -1,8 +1,10 @@
 ---
 import Base from '../../layouts/Base.astro';
-import Byline from '../../components/Byline.astro';
 import Crumbs from '../../components/Crumbs.astro';
+import Blocks from '../../components/Blocks.astro';
+import BuyBlock from '../../components/BuyBlock.astro';
 import { pairs, modelPath } from '../../data/models';
+import { compareBlocks } from '../../lib/guide';
 import { specRows } from '../../lib/modelView';
 import { SITE } from '../../lib/site';
 import { crumbLd, webPageLd } from '../../lib/ld';
@@ -13,9 +15,10 @@ export function getStaticPaths() {
 const { pair } = Astro.props;
 const path = `/compare/${pair.slug}/`;
 const crumbs = [{ name: 'Compare', path: '/compare/' }, { name: `${pair.a.name} vs ${pair.b.name}`, path }];
-const desc = `${pair.a.name} vs ${pair.b.name}. Same spec fields, each value cited to the manufacturer page that printed it.`;
+const desc = `${pair.a.name} vs ${pair.b.name}. Published process, output, duty cycle, input, and thickness, with a verdict from those cells.`;
 const rowsA = specRows(pair.a);
 const rowsB = specRows(pair.b);
+const blocks = compareBlocks(pair.a, pair.b);
 const jsonld = [
   webPageLd(`${pair.a.name} vs ${pair.b.name}`, path, desc, SITE.checked),
   crumbLd(crumbs),
@@ -30,9 +33,10 @@ const jsonld = [
     <div class="pagehead">
       <Crumbs crumbs={crumbs} />
       <h1>{pair.a.name} vs {pair.b.name}</h1>
-      <p class="lede">Same fields. Each cell is that model's published text. A blank stays "Not published by manufacturer." The outlet chip does not hide either column.</p>
-      <Byline />
+      <p class="lede">Same fields for both machines. A cell that the manufacturer did not print stays "Not published by manufacturer."</p>
     </div>
+    <Blocks blocks={blocks} />
+    <h2>Specifications</h2>
     <div class="tblwrap">
       <table>
         <thead>
@@ -59,6 +63,8 @@ const jsonld = [
         </tbody>
       </table>
     </div>
+    <BuyBlock slug={pair.a.slug} query={pair.a.searchQuery} name={pair.a.name} />
+    <BuyBlock slug={pair.b.slug} query={pair.b.searchQuery} name={pair.b.name} />
     <p><a href={`/which-welder/?model=${pair.a.slug}`}>Outlet check, {pair.a.name}</a> · <a href={`/which-welder/?model=${pair.b.slug}`}>Outlet check, {pair.b.name}</a></p>
   </div>
 </Base>

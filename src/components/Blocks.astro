@@ -1,0 +1,11 @@
+---
+import type { Block } from '../lib/guide';
+interface Props { blocks: Block[] }
+const { blocks } = Astro.props;
+---
+{blocks.map((block) => (
+  <section class="block">
+    <h2>{block.heading}</h2>
+    {block.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+  </section>
+))}

@@ -1,16 +1,15 @@
 ---
 import Base from '../layouts/Base.astro';
-import Byline from '../components/Byline.astro';
 import JobForm from '../components/JobForm.astro';
 import MachineTable from '../components/MachineTable.astro';
 import { models, brands } from '../data/models';
 import { SITE } from '../lib/site';
 import { crumbLd, webPageLd, websiteLd } from '../lib/ld';
 
-const desc = '31 welders. Amp range, duty cycle, input, and thickness copied from the manufacturer sheet. Filter by 120V/15A or 240V/50A.';
+const desc = 'Welder specs copied from manufacturer sheets, plus an outlet check for 120 V / 15 A and 240 V / 50 A. Missing figures stay blank.';
 const jsonld = [
   websiteLd(desc),
-  webPageLd('Welder specs and which machine fits the outlet', '/', desc, SITE.checked),
+  webPageLd('Welder specs and which one fits your outlet', '/', desc, SITE.checked),
   crumbLd([]),
   {
     '@type': 'ItemList',
@@ -19,12 +18,17 @@ const jsonld = [
   },
 ];
 ---
-<Base title="Welder specs and which machine fits" description={desc} path="/" nav="home" og="/og/default.png" jsonld={jsonld}>
+<Base title="Welder specs and which one fits your outlet" description={desc} path="/" nav="home" og="/og/default.png" jsonld={jsonld}>
   <div class="wrap pagehead">
-    <p class="kicker">Read 2 November 2026 · {models.length} models · {brands().length} brands</p>
-    <h1>Sheet. Outlet. Job.</h1>
-    <p class="lede">Numbers come from the maker. A blank stays blank. The chip is 120V/15A or 240V/50A. A machine that fails that outlet drops off the table.</p>
-    <Byline />
+    <h1>Welder specs and which one fits your outlet</h1>
+    <p class="lede">Each model page copies the amp range, duty cycle, input, wire or rod size, weight, and thickness from the manufacturer page or that maker's manual. If the cited page does not print a figure, the cell says "Not published by manufacturer."</p>
+    <div class="prose">
+      <p>The two outlet buttons filter the table. 120 V / 15 A keeps a machine when the published circuit check does not fail on a 15 A breaker. 240 V / 50 A does the same for 208 V, 230 V, and 240 V input at a 50 A breaker. A warning stays visible. A machine with no 120 V line disappears on the 120 V button. Input current at rated output is a draw. It becomes a passing breaker result only when the sheet also names a breaker size the draw fits.</p>
+      <p>Model pages add four readings of those cells. Best jobs restates the processes, metals, and thickness the sheet names, including single-pass limits. Power needs quotes the input line and says whether each outlet button passes, warns, or fails. Duty cycle turns each printed percent into minutes of a 10-minute period, and it labels that split as a reading of the percent, not a new rating. In the package quotes included cords, drive rolls, and regulators only when the sheet says they are included.</p>
+      <p>The verdict stays inside those cells. It does not add a price, a star rating, or a thickness the manufacturer left off. {brands().map((b) => b.name).join(', ')} are the brands in this set, {models.length} machines in all. A brand that is missing was not transcribed for this version.</p>
+      <p>Comparison pages exist only for pairs that share a process and a voltage and that do not repeat another pair. The <a href="/compare/">compare index</a> lists them. For any other two machines, open the two model pages. The <a href="/which-welder/">job check</a> below applies one outlet, one breaker, one metal, one thickness, and one process to a model or to the whole list.</p>
+      <p>Amazon links are searches with the site tag. They are not a verified product match until a live title is checked, and no price is shown. WeldFacts is not the manufacturer and not a dealer. The manual that ships with the machine still governs setup. Reading rules for citations, duty minutes, and the outlet mapping are on the <a href="/how-we-verify/">source rules</a> page.</p>
+    </div>
     <JobForm />
     <h2>Spec index</h2>
     <MachineTable rows={models} />

@@ -1,6 +1,5 @@
 ---
 import Base from '../layouts/Base.astro';
-import Byline from '../components/Byline.astro';
 import Crumbs from '../components/Crumbs.astro';
 import { SITE } from '../lib/site';
 import { crumbLd, webPageLd } from '../lib/ld';
@@ -14,8 +13,13 @@ const jsonld = [webPageLd('Contact WeldFacts.com', '/contact/', desc, SITE.check
     <div class="pagehead">
       <Crumbs crumbs={crumbs} />
       <h1>Contact</h1>
-      <p class="lede">Send the model, the figure, and the manufacturer URL.</p>
-      <Byline />
+      <p class="lede">The only address is {SITE.email}. The form opens your mail app. This site does not receive or store the message.</p>
+    </div>
+    <div class="prose">
+      <p>A useful correction names the model, the figure you think is wrong, and the manufacturer URL that prints the right figure. A sentence such as "the duty cycle is wrong" is hard to check. "Millermatic 142 duty should be the 100 A, 60% line on the spec sheet" can be checked against the citation already on that page.</p>
+      <p>This address is for the spec tables, a broken source link, and an Amazon button that points at the wrong machine. It is not a quote desk. WeldFacts does not sell machines, ship parts, or set a price. It is not an electrical inspection and not a substitute for the manual in the box. Setup questions belong with the manufacturer or with a qualified person looking at the circuit you have.</p>
+      <p>There is no staff directory and no personal mailbox. Mail to {SITE.email} is the whole contact path. The form below puts your note into a message addressed to that inbox. Your mail app sends it. If the button does nothing, write to the same address yourself. Do not send passwords, order numbers, or payment details. Those are not needed to correct a spec, and this site has nowhere to store them.</p>
+      <p>Source rules for what counts as a published figure are on the <a href="/how-we-verify/">source rules</a> page. The affiliate relationship with Amazon is on the <a href="/affiliate-disclosure/">affiliate disclosure</a>. The read date on the current tables is 2 November 2026. A correction that points at a newer manufacturer PDF can move a cell. A correction that asks for a price, a ranking, or a figure the manufacturer did not print will not be added.</p>
     </div>
     <form class="stack" action={`mailto:${SITE.email}`} method="post" enctype="text/plain">
       <label for="cName">Name</label>

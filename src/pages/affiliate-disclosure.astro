@@ -1,6 +1,5 @@
 ---
 import Base from '../layouts/Base.astro';
-import Byline from '../components/Byline.astro';
 import Crumbs from '../components/Crumbs.astro';
 import { AMAZON_DISCLOSURE, AMAZON_TAG, ASINS } from '../config/affiliate';
 import { SITE } from '../lib/site';
@@ -16,11 +15,13 @@ const verified = Object.keys(ASINS).length;
     <div class="pagehead">
       <Crumbs crumbs={crumbs} />
       <h1>Affiliate disclosure</h1>
-      <Byline />
     </div>
     <p>{AMAZON_DISCLOSURE}</p>
-    <p>Amazon is the only affiliate program here. No ad network. Every Amazon link is built in one file. Tag <span class="mono">{AMAZON_TAG}</span>.</p>
-    <p>{verified === 0 ? 'No live Amazon title has been checked. Every button is a tagged search.' : `${verified} models use a direct link. The rest are searches.`}</p>
-    <p>No prices. A missing spec is not filled from a retailer page.</p>
+    <p>Amazon is the only affiliate program on WeldFacts. There is no ad network, no display unit, and no other merchant link. Every Amazon URL is built in one file, <span class="mono">src/config/affiliate.ts</span>, so the tag cannot drift between pages. The tag is <span class="mono">{AMAZON_TAG}</span>.</p>
+    <p>Until a live Amazon title is opened and confirmed to name one model, the button is a search. The search URL is <span class="mono">https://www.amazon.com/s</span> with the model name as the keyword and the tag on the query. A search result is not a verified match. A listing that names several models is not used as a direct link. A direct link, when one exists, is <span class="mono">/dp/</span> plus an ASIN that was checked on amazon.com, with the title and the date of that check stored next to the ASIN.</p>
+    <p>{verified === 0 ? 'No live Amazon title has been checked for this version. Every button is a tagged search.' : `${verified} models use a direct link. The rest are searches.`}</p>
+    <p>WeldFacts earns from qualifying purchases that Amazon attributes to the tag. The tag does not change the specification table. A price is not copied from Amazon onto a spec page, a comparison, or this disclosure. A missing amp, duty cycle, or thickness is not filled from a retailer page, an Amazon bullet, or a review.</p>
+    <p>The disclosure sentence also sits in the footer of every page and next to each Amazon button, because those buttons are the paid links. Clicking one leaves this site. Amazon may set its own cookies after that. WeldFacts does not run an analytics cookie and does not receive the order.</p>
+    <p>If a link points at the wrong machine, send the model name and the URL you expected to <a href={`mailto:${SITE.email}`}>{SITE.email}</a>. The spec correction path is the same address, described on the <a href="/contact/">contact</a> page. Questions about an Amazon order go to Amazon, not to this site.</p>
   </div>
 </Base>

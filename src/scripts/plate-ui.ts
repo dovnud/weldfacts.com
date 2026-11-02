@@ -18,7 +18,7 @@ function setOutlet(id: string) {
     const rows = [...document.querySelectorAll<HTMLElement>('tr[data-fit]')];
     const shown = rows.filter((row) => !row.hidden && row.offsetParent !== null).length;
     const visible = rows.filter((row) => (row.dataset.fit || '').split(/\s+/).includes(id)).length;
-    el.textContent = `${visible} of ${rows.length}`;
+    el.textContent = `${visible} of ${rows.length} shown for this outlet`;
     void shown;
   });
   const form = document.getElementById('job-form') as HTMLFormElement | null;

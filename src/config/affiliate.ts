@@ -1,5 +1,5 @@
 /**
- * AFFILIATE CONFIG — the ONE place the Amazon Associates tracking ID lives.
+ * AFFILIATE CONFIG: the one place the Amazon Associates tracking ID lives.
  *
  * >>> SWAP POINT: change AMAZON_TAG below and every Amazon link on the site changes with it. <<<
  *
