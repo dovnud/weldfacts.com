@@ -1,0 +1,61 @@
+---
+import type { Model } from '../data/models';
+import { modelPath } from '../data/models';
+import { PROC_LABEL, dutyMark, fitTokens, outletCircuit } from '../lib/plate';
+interface Props { rows: Model[] }
+const { rows } = Astro.props;
+const shown120 = rows.filter((m) => fitTokens(m).split(/\s+/).includes('120-15')).length;
+---
+<div class="sheet-tools">
+  <p class="count" data-live-count>{shown120} of {rows.length}</p>
+  <p class="small muted">Outlet chip hides a fail. Warn and unpublished input stay.</p>
+</div>
+<div class="tblwrap">
+  <table class="sheet sortable">
+    <thead>
+      <tr>
+        <th><button type="button" data-sort="brand">Brand</button></th>
+        <th><button type="button" data-sort="name">Model</button></th>
+        <th><button type="button" data-sort="proc">Process</button></th>
+        <th><button type="button" data-sort="volt">Input</button></th>
+        <th><button type="button" data-sort="lb">lb</button></th>
+        <th><button type="button" data-sort="duty">Duty</button></th>
+        <th>Outlet</th>
+      </tr>
+    </thead>
+    <tbody>
+      {rows.map((m) => {
+        const d120 = dutyMark(m.duty.text, 120, m.voltages);
+        const d240 = dutyMark(m.duty.text, 240, m.voltages);
+        const s120 = outletCircuit(m, 120, 15);
+        const s240 = outletCircuit(m, 240, 50);
+        return (
+          <tr
+            data-fit={fitTokens(m) || 'none'}
+            data-brand={m.brand}
+            data-name={m.name}
+            data-proc={m.procs.length}
+            data-volt={m.voltages.includes(120) ? 120 : 240}
+            data-lb={m.weightLb ?? -1}
+            data-duty120={d120?.percent ?? -1}
+            data-duty240={d240?.percent ?? -1}
+          >
+            <td>{m.brand}</td>
+            <td><a href={modelPath(m)}>{m.name}</a>{m.sku ? <span class="small muted"> {m.sku}</span> : null}</td>
+            <td class="mono">{m.procs.map((p) => PROC_LABEL[p]).join(' ')}</td>
+            <td class="mono">{m.voltages.map((v) => `${v}V`).join(' ')}</td>
+            <td class="mono" title={m.weight.text}>{m.weightLb ?? 'n/p'}</td>
+            <td class="mono">
+              <span data-for="120-15" title={d120?.clause ?? ''}>{d120 ? `${d120.percent}%` : 'n/p'}</span>
+              <span data-for="240-50" title={d240?.clause ?? ''}>{d240 ? `${d240.percent}%` : 'n/p'}</span>
+            </td>
+            <td>
+              <span class={`pill ${s120}`} data-for="120-15">{s120}</span>
+              <span class={`pill ${s240}`} data-for="240-50">{s240}</span>
+            </td>
+          </tr>
+        );
+      })}
+    </tbody>
+  </table>
+</div>

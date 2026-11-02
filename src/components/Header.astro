@@ -3,16 +3,19 @@ interface Props { active?: string }
 const { active = '' } = Astro.props;
 const links = [
   ['/', 'Home', 'home'],
-  ['/compare/best-for-120v/', '120V', 'v120'],
-  ['/compare/best-for-240v/', '240V', 'v240'],
-  ['/compare/best-multiprocess/', 'Multi-process', 'multi'],
   ['/models/', 'Models', 'models'],
-  ['/which-welder/', 'Which welder', 'job'],
+  ['/compare/', 'Compare', 'compare'],
+  ['/compare/best-multiprocess/', 'Multi', 'multi'],
+  ['/which-welder/', 'Check', 'job'],
 ];
 ---
 <header class="site">
   <div class="head-in wrap">
-    <a class="brand" href="/">Weld<span>Facts</span><small>Amps, duty cycle, outlet</small></a>
+    <a class="brand" href="/">Weld<span>Facts</span><small>Sheet numbers only</small></a>
+    <div class="chips" role="group" aria-label="Outlet filter">
+      <button type="button" data-outlet-chip="120-15" aria-pressed="true">120V/15A</button>
+      <button type="button" data-outlet-chip="240-50" aria-pressed="false">240V/50A</button>
+    </div>
     <nav class="main" aria-label="Main">
       <ul>
         {links.map(([href, label, key]) => (

@@ -2,11 +2,11 @@
 import Base from '../layouts/Base.astro';
 import { SITE } from '../lib/site';
 import { webPageLd } from '../lib/ld';
-const desc = 'That page is not on WeldFacts.com. The model list and the outlet check are linked from here.';
+const desc = 'That page is not on WeldFacts.com.';
 ---
 <Base title="Page not found" description={desc} path="/404/" noindex og="/og/default.png" jsonld={[webPageLd('Page not found', '/404/', desc, SITE.checked)]}>
-  <div class="wrap pagehead prose">
-    <h1>Page not found</h1>
-    <p>That address is not a spec page. Try the <a href="/models/">model list</a> or the <a href="/which-welder/">outlet check</a>.</p>
+  <div class="wrap pagehead">
+    <h1>Not on this site</h1>
+    <p><a href="/">Spec index</a> · <a href="/which-welder/">Job check</a></p>
   </div>
 </Base>

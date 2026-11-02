@@ -30,8 +30,16 @@ const ld = graph(jsonld);
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="color-scheme" content="light dark" />
-    <meta name="theme-color" content="#1c2430" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#121418" />
+    <script is:inline>
+      try {
+        var saved = localStorage.getItem('wf-outlet');
+        document.documentElement.dataset.outlet = saved === '240-50' ? '240-50' : '120-15';
+      } catch (e) {
+        document.documentElement.dataset.outlet = '120-15';
+      }
+    </script>
     <title>{fullTitle}</title>
     <meta name="description" content={metaDesc} />
     <link rel="canonical" href={canonical} />
@@ -48,7 +56,7 @@ const ld = graph(jsonld);
     <meta property="og:image" content={SITE.url + og} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content={ogAlt ?? `${SITE.name} — ${SITE.tagline}`} />
+    <meta property="og:image:alt" content={ogAlt ?? `${SITE.name}. ${SITE.tagline}`} />
     {modifiedIso && <meta property="article:modified_time" content={modifiedIso} />}
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={fullTitle} />
@@ -63,5 +71,8 @@ const ld = graph(jsonld);
       <slot />
     </main>
     <Footer />
+    <script>
+      import '../scripts/plate-ui.ts';
+    </script>
   </body>
 </html>

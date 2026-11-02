@@ -43,7 +43,7 @@ export function llmsTxt(): string {
 
 export function llmsFull(): string {
   const lines: string[] = [
-    `# ${SITE.name} — full reference`,
+    `# ${SITE.name}: full reference`,
     '',
     `Checked ${SITE.checked}. Canonical site: ${SITE.url}/. Contact: ${SITE.email}. Publisher: ${SITE.publisher}.`,
     '',
@@ -54,7 +54,7 @@ export function llmsFull(): string {
     lines.push(`## ${m.name}`, '', `URL: ${abs(modelPath(m))}`, `Manufacturer: ${m.productUrl}`, m.sku ? `SKU: ${m.sku}` : '', m.summary, '');
     for (const row of specRows(m)) {
       lines.push(`- ${row.label}: ${row.field.text}`);
-      lines.push(`  Source: ${row.field.cite.url} — ${row.field.cite.where}`);
+      lines.push(`  Source: ${row.field.cite.url} | ${row.field.cite.where}`);
     }
     lines.push('');
   }

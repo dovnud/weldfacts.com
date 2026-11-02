@@ -3,6 +3,7 @@ import Base from '../../layouts/Base.astro';
 import Byline from '../../components/Byline.astro';
 import Crumbs from '../../components/Crumbs.astro';
 import { models, modelPath } from '../../data/models';
+import { fitTokens } from '../../lib/plate';
 import { SITE } from '../../lib/site';
 import { crumbLd, webPageLd } from '../../lib/ld';
 
@@ -24,8 +25,8 @@ const jsonld = [
   <div class="wrap">
     <div class="pagehead">
       <Crumbs crumbs={crumbs} />
-      <h1>Multi-process, as published</h1>
-      <p class="lede">MIG and flux-cored are two processes. A machine is on this list when the cited page names a third. The order is the count, then the name. It is not a score of how well any process welds.</p>
+      <h1>Three processes, named</h1>
+      <p class="lede">MIG and flux-cored count as two. A third named process gets the row. Order is the count, then the name.</p>
       <Byline />
     </div>
     <div class="tblwrap">
@@ -33,7 +34,7 @@ const jsonld = [
         <thead><tr><th>#</th><th>Model</th><th>Processes named</th><th>Input class</th></tr></thead>
         <tbody>
           {ranked.map((m, i) => (
-            <tr>
+            <tr data-fit={fitTokens(m) || 'none'}>
               <td>{i + 1}</td>
               <td><a href={modelPath(m)}>{m.name}</a></td>
               <td>{m.procs.map((p) => labels[p]).join(', ')}</td>

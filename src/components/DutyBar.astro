@@ -1,0 +1,23 @@
+---
+import type { DutyMark } from '../lib/plate';
+interface Props { mark: DutyMark | null; outlet: '120-15' | '240-50'; label: string }
+const { mark, outlet, label } = Astro.props;
+const width = mark ? Math.max(0, Math.min(100, mark.percent)) : 0;
+const weld = mark ? (mark.percent / 10).toFixed(1) : '';
+const rest = mark ? ((100 - mark.percent) / 10).toFixed(1) : '';
+---
+<div class="duty" data-for={outlet}>
+  <div class="duty-label">{label}</div>
+  {mark ? (
+    <>
+      <div class="track" role="img" aria-label={`${mark.percent} percent of a 10 minute cycle`}>
+        <div class="fill" style={`width:${width}%`}></div>
+        {Array.from({ length: 9 }, (_, i) => <i class="tick" style={`left:${(i + 1) * 10}%`}></i>)}
+      </div>
+      <p class="mono">{mark.percent}% · {weld} min on · {rest} min off{mark.amps ? ` · ${mark.amps} A` : ''}</p>
+      <p class="small">{mark.split ? 'First percent on the sheet for this voltage.' : 'Duty line does not name a voltage.'} {mark.clause}</p>
+    </>
+  ) : (
+    <p>No duty percent printed for this outlet.</p>
+  )}
+</div>

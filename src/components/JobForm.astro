@@ -1,0 +1,112 @@
+---
+import { models } from '../data/models';
+const thicknesses = [
+  ['0.0625', '1/16 in'],
+  ['0.125', '1/8 in'],
+  ['0.1875', '3/16 in'],
+  ['0.25', '1/4 in'],
+  ['0.375', '3/8 in'],
+  ['0.5', '1/2 in'],
+  ['0.625', '5/8 in'],
+];
+---
+<form class="finder" id="job-form">
+  <div class="finder-head">Job check <span>Uses the outlet chip</span></div>
+  <div class="finder-body">
+    <div class="f-grid">
+      <div>
+        <label for="voltage">Outlet</label>
+        <select id="voltage" name="voltage">
+          <option value="120">120 V</option>
+          <option value="240">240 V</option>
+        </select>
+      </div>
+      <div>
+        <label for="breakerA">Breaker, A</label>
+        <input id="breakerA" name="breakerA" type="number" min="1" step="1" required value="15" />
+      </div>
+      <div>
+        <label for="process">Process</label>
+        <select id="process" name="process">
+          <option value="mig">MIG</option>
+          <option value="flux">Flux-cored</option>
+          <option value="stick">Stick</option>
+          <option value="tig">TIG</option>
+        </select>
+      </div>
+      <div>
+        <label for="material">Metal</label>
+        <select id="material" name="material">
+          <option value="mild-steel">Mild steel</option>
+          <option value="stainless">Stainless</option>
+          <option value="aluminum">Aluminum</option>
+          <option value="cast-iron">Cast iron</option>
+        </select>
+      </div>
+      <div>
+        <label for="thicknessIn">Thickness</label>
+        <select id="thicknessIn" name="thicknessIn">
+          {thicknesses.map(([value, label]) => <option value={value} selected={value === '0.125'}>{label}</option>)}
+        </select>
+      </div>
+      <div>
+        <label for="model">Model</label>
+        <select id="model" name="model">
+          <option value="">All on this outlet</option>
+          {models.map((m) => <option value={m.slug}>{m.name}</option>)}
+        </select>
+      </div>
+    </div>
+    <button class="f-btn" type="submit">Run the sheet</button>
+  </div>
+</form>
+<div id="job-out" hidden></div>
+<script>
+  import { getModel, modelPath, models } from '../data/models';
+  import { evaluateJob, rankJobs } from '../lib/job';
+
+  const form = document.getElementById('job-form') as HTMLFormElement | null;
+  const out = document.getElementById('job-out') as HTMLElement | null;
+  if (form && out) {
+    const params = new URLSearchParams(location.search);
+    const preset = params.get('model');
+    if (preset) {
+      const select = form.querySelector('#model') as HTMLSelectElement;
+      if ([...select.options].some((o) => o.value === preset)) select.value = preset;
+    }
+    const chip = document.documentElement.dataset.outlet || '120-15';
+    (form.querySelector('#voltage') as HTMLSelectElement).value = chip.startsWith('120') ? '120' : '240';
+    (form.querySelector('#breakerA') as HTMLInputElement).value = chip.endsWith('15') ? '15' : '50';
+
+    form.addEventListener('submit', (ev) => {
+      ev.preventDefault();
+      const data = new FormData(form);
+      const input = {
+        voltage: Number(data.get('voltage')) === 240 ? 240 as const : 120 as const,
+        breakerA: Number(data.get('breakerA')),
+        material: String(data.get('material')) as 'mild-steel' | 'stainless' | 'aluminum' | 'cast-iron',
+        thicknessIn: Number(data.get('thicknessIn')),
+        process: String(data.get('process')) as 'mig' | 'flux' | 'stick' | 'tig',
+      };
+      const render = (list: typeof models, title: string) => {
+        if (!list.length) return `<h2>${title}</h2><p>None.</p>`;
+        return `<h2>${title}</h2>` + list.map((m) => {
+          const result = evaluateJob(m, input);
+          const checks = result.checks.map((ch) => `<div class="check-row"><div class="pill ${ch.status}">${ch.status}</div><div><strong>${ch.title}</strong><p>${ch.detail}</p></div></div>`).join('');
+          return `<article><h3><a href="${modelPath(m)}">${m.name}</a></h3><p>${result.headline}</p>${checks}</article>`;
+        }).join('');
+      };
+      const one = String(data.get('model') || '');
+      out.hidden = false;
+      if (one) {
+        const model = getModel(one);
+        out.innerHTML = model ? render([model], model.name) : '';
+      } else {
+        const groups = rankJobs(models, input);
+        out.innerHTML = render(groups.fit, `Pass (${groups.fit.length})`)
+          + render(groups.partial, `Partial (${groups.partial.length})`)
+          + render(groups.out, `Fail (${groups.out.length})`);
+      }
+    });
+  }
+</script>

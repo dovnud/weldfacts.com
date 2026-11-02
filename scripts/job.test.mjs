@@ -1,5 +1,6 @@
 import { getModel } from '../src/data/models.ts';
 import { evaluateJob } from '../src/lib/job.ts';
+import { dutyMark, fitTokens } from '../src/lib/plate.ts';
 
 function status(slug, input, id) {
   return evaluateJob(getModel(slug), input).checks.find((c) => c.id === id)?.status;
@@ -58,5 +59,18 @@ if (status('power-mig-260', { voltage: 240, breakerA: 50, material: 'aluminum', 
 if (status('handler-125', { voltage: 120, breakerA: 20, material: 'mild-steel', thicknessIn: 0.125, process: 'flux' }, 'circuit') !== 'fail') {
   throw new Error('Handler 125 draws 21.3 A');
 }
+
+const m211 = getModel('millermatic-211-pro');
+const d120 = dutyMark(m211.duty.text, 120, m211.voltages);
+const d240 = dutyMark(m211.duty.text, 240, m211.voltages);
+if (d120?.percent !== 60 || d120?.amps !== '110') throw new Error('211 PRO 120 V duty should be 60% at 110 A');
+if (d240?.percent !== 60 || d240?.amps !== '160') throw new Error('211 PRO 240 V duty should be 60% at 160 A');
+const pm260 = getModel('power-mig-260');
+if (dutyMark(pm260.duty.text, 120, pm260.voltages)) throw new Error('260 has no 120 V duty');
+if (dutyMark(pm260.duty.text, 240, pm260.voltages)?.percent !== 40) throw new Error('260 duty is 40%');
+const fit210 = fitTokens(getModel('handler-210i'));
+if (!fit210.includes('120-15') || !fit210.includes('240-50')) throw new Error('210i should stay on both chips');
+if (fitTokens(getModel('millermatic-142')).includes('120-15')) throw new Error('142 needs 20 A, so 15 A fails');
+if (!fitTokens(getModel('thunderbolt-210-mv')).includes('240-50')) throw new Error('Thunderbolt 44.9 A fits a 50 A breaker as a warning');
 
 console.log('job tests ok');

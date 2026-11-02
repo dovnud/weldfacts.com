@@ -9,32 +9,33 @@ const crumbs = [{ name: 'How we verify', path: '/how-we-verify/' }];
 const desc = 'How WeldFacts checks welder specs: manufacturer pages and manuals only, a citation on every row, and no estimated amps or thickness.';
 const jsonld = [webPageLd('How we verify welder specs', '/how-we-verify/', desc, SITE.checked), crumbLd(crumbs)];
 ---
-<Base title="How we verify welder specs" description={desc} path="/how-we-verify/" nav="verify" og="/og/page-how-we-verify.png" jsonld={jsonld}>
+<Base title="How we verify welder specs" description={desc} path="/how-we-verify/" og="/og/page-how-we-verify.png" jsonld={jsonld}>
   <div class="wrap prose">
     <div class="pagehead">
       <Crumbs crumbs={crumbs} />
-      <h1>How we verify specs</h1>
+      <h1>How we verify</h1>
       <Byline />
     </div>
-    <p>A number is printed as a fact only when a manufacturer page or that manufacturer’s manual states it. The row links the URL and names the place on the page. The date on this site, 2 November 2026, is that read date. It is not a rolling “updated” stamp.</p>
-    <h2>What counts as a source</h2>
+    <p>A number is a fact only when the manufacturer page or that maker's manual states it. The row links the URL. 2 November 2026 is the read date.</p>
+    <h2>Sources</h2>
     <ul>
-      <li>The current product page on the manufacturer’s site, including a specifications list in the page.</li>
-      <li>The spec-sheet PDF linked from that page, including Miller and Hobart sheets on the ITW content host.</li>
-      <li>The owner’s manual PDF hosted by the manufacturer. Harbor Freight manuals are cited from manuals.harborfreight.com. The ESAB Rebel EMP 215ic figures are from ESAB manual 0463 789 001.</li>
+      <li>The maker's product page, including a spec list on that page.</li>
+      <li>The spec-sheet PDF linked from that page. Miller and Hobart sheets are on the ITW content host.</li>
+      <li>The owner's manual PDF from the maker. Harbor Freight manuals are on manuals.harborfreight.com. Rebel EMP 215ic figures are from ESAB manual 0463 789 001.</li>
     </ul>
-    <p>Retailer listings, forum posts, and other spec roundups are not sources. A marketing sentence on the manufacturer’s own brochure is a source, and when it disagrees with that brochure’s specifications table both sentences are printed. The Rebel EMP 235ic brochure says 53 lb in the introduction and 63 lb in the specifications table. The job tool’s weight sort uses 63 lb. The cell shows both.</p>
-    <h2>What we do when a field is missing</h2>
-    <p>The cell says “Not published by manufacturer.” A wire size is not copied from a contact-tip catalog unless the sheet says those rolls or wires are what the machine is set up for. Duty cycle is not calculated from a 10-minute story the manual uses as an example. Electrode classifications such as E7018 are not turned into a metal name.</p>
-    <h2>Outlet and thickness rules</h2>
-    <p>The which-welder tool treats a published 208–240 V, 230 V, or 240 V input as the 240 V outlet, and a published 110 V, 115 V, or 120 V input as the 120 V outlet. 460 V and 575 V match neither. The result says when that mapping was used.</p>
-    <p>Input current at rated output is not a breaker recommendation. If that current is above the breaker you type, the circuit check fails. If it fits and the sheet never names a breaker, the check is a warning. A pass needs a breaker size the maker printed. Hobart’s Handler 210i table has a 15 A row and a 20 A row. ESAB’s 215ic manual also prints a 30 A time-delay maximum and a 50 A normal-fuse maximum. A breaker above both maximums fails.</p>
-    <p>When a thickness is labeled single pass and the same page says thicker material is possible without a second number, going past the single-pass figure is a warning. When the page prints a maximum and does not call it single-pass only, going past it fails. Gauge is not converted to inches.</p>
-    <p>Aluminum on TIG passes only when the page names aluminum. DC TIG that does not name aluminum fails that metal. A metal the page never names, and that is not that aluminum case, is left unscored.</p>
-    <h2>When two official files disagree</h2>
-    <p>Harbor Freight hosts two manuals for Unlimited 200, item 57862. They do not print the same input current. This site cites 57862-193175459367.pdf and says so on the model page. The other file is not averaged in.</p>
+    <p>Retail pages, forums, and other roundups are not sources. When one brochure disagrees with itself, both sentences stay. Rebel EMP 235ic says 53 lb in the intro and 63 lb in the spec table. The weight sort uses 63 lb. The cell shows both.</p>
+    <h2>Missing fields</h2>
+    <p>The cell says "Not published by manufacturer." Tip catalogs are not a wire range unless the sheet says the machine is set up for those wires. An example about a 10 minute cycle is not a new duty rating. E7018 is not turned into the word steel.</p>
+    <h2>Outlet and thickness</h2>
+    <p>208-240 V, 230 V, and 240 V match the 240 V chip. 110 V, 115 V, and 120 V match the 120 V chip. 460 V and 575 V match neither.</p>
+    <p>Input current at rated output is not a breaker size. Above the breaker you set: fail. Fits, and the sheet names no breaker: warning. A pass needs a printed breaker size. Handler 210i has 15 A and 20 A rows. The 215ic manual also prints a 30 A time-delay max and a 50 A normal-fuse max.</p>
+    <p>Single pass with no second maximum: a thicker job warns. A printed maximum that is not called single pass: a thicker job fails. Gauge is not converted to inches.</p>
+    <p>The 10 minute bar reads the first percent already printed for that voltage. It does not pick a second duty point and it does not invent one.</p>
+    <p>Aluminum on TIG passes only when the page names aluminum. DC TIG that never names aluminum fails that metal. Any other unnamed metal is left unscored.</p>
+    <h2>Two files</h2>
+    <p>Harbor Freight has two manuals for Unlimited 200, item 57862. Input current does not match. This site cites 57862-193175459367.pdf only.</p>
     <h2>Prices</h2>
-    <p>No prices are shown. Amazon links are searches until an ASIN has been checked on a live Amazon page. None have been checked for this version. The tag is weldfacts-20.</p>
-    <p>Corrections: <a href="/contact/">contact</a>.</p>
+    <p>No prices. Amazon links are searches. Tag weldfacts-20. No ASIN is verified in this version.</p>
+    <p><a href="/contact/">Corrections</a>.</p>
   </div>
 </Base>

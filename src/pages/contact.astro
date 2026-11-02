@@ -6,33 +6,26 @@ import { SITE } from '../lib/site';
 import { crumbLd, webPageLd } from '../lib/ld';
 
 const crumbs = [{ name: 'Contact', path: '/contact/' }];
-const desc = `Send spec corrections and questions to ${SITE.email}. The contact form opens your email app. This page does not store the message.`;
+const desc = `Spec corrections go to ${SITE.email}. The form opens your email app. This page does not store the message.`;
 const jsonld = [webPageLd('Contact WeldFacts.com', '/contact/', desc, SITE.checked), crumbLd(crumbs), { '@type': 'ContactPage', name: 'Contact', url: SITE.url + '/contact/' }];
 ---
-<Base title="Contact WeldFacts.com" description={desc} path="/contact/" nav="about" og="/og/page-contact.png" jsonld={jsonld}>
+<Base title="Contact WeldFacts.com" description={desc} path="/contact/" og="/og/page-contact.png" jsonld={jsonld}>
   <div class="wrap">
     <div class="pagehead">
       <Crumbs crumbs={crumbs} />
       <h1>Contact</h1>
-      <p class="lede">Corrections are welcome. A link to the manufacturer page, and the figure you think is wrong, is the fastest way to get a row fixed.</p>
+      <p class="lede">Send the model, the figure, and the manufacturer URL.</p>
       <Byline />
     </div>
-    <div class="grid2">
-      <form class="stack" action={`mailto:${SITE.email}`} method="post" enctype="text/plain">
-        <label for="cName">Your name</label>
-        <input id="cName" name="name" type="text" autocomplete="name" />
-        <label for="cEmail">Your email</label>
-        <input id="cEmail" name="email" type="email" autocomplete="email" />
-        <label for="cMsg">Message</label>
-        <textarea id="cMsg" name="message" rows="6" placeholder="Model, the figure, and the manufacturer URL."></textarea>
-        <button class="primary" type="submit">Open in my email app</button>
-        <p class="small muted">This opens a message to {SITE.email} in your mail app. Nothing is stored by this page.</p>
-      </form>
-      <div class="card">
-        <h2>Email</h2>
-        <p class="mono"><a href={`mailto:${SITE.email}`}>{SITE.email}</a></p>
-        <p>There is no phone line. Email keeps a written record a correction can be checked against.</p>
-      </div>
-    </div>
+    <form class="stack" action={`mailto:${SITE.email}`} method="post" enctype="text/plain">
+      <label for="cName">Name</label>
+      <input id="cName" name="name" type="text" autocomplete="name" />
+      <label for="cEmail">Email</label>
+      <input id="cEmail" name="email" type="email" autocomplete="email" />
+      <label for="cMsg">Message</label>
+      <textarea id="cMsg" name="message" rows="6"></textarea>
+      <button class="primary" type="submit">Open mail</button>
+      <p class="small muted">Opens a message to {SITE.email}. This page stores nothing.</p>
+    </form>
   </div>
 </Base>

@@ -1,107 +1,32 @@
 ---
 import Base from '../layouts/Base.astro';
 import Byline from '../components/Byline.astro';
-import HeroArt from '../components/HeroArt.astro';
-import { models, modelPath, brands } from '../data/models';
-import { linkFor, AFFILIATE_REL, AFFILIATE_TARGET } from '../config/affiliate';
+import JobForm from '../components/JobForm.astro';
+import MachineTable from '../components/MachineTable.astro';
+import { models, brands } from '../data/models';
 import { SITE } from '../lib/site';
 import { crumbLd, webPageLd, websiteLd } from '../lib/ld';
 
-const desc = 'Welder amp range, duty cycle, input, and thickness from manufacturer pages, plus a check against your outlet, metal, and process.';
+const desc = '31 welders. Amp range, duty cycle, input, and thickness copied from the manufacturer sheet. Filter by 120V/15A or 240V/50A.';
 const jsonld = [
   websiteLd(desc),
   webPageLd('Welder specs and which machine fits the outlet', '/', desc, SITE.checked),
   crumbLd([]),
   {
     '@type': 'ItemList',
-    name: 'Buyer guides from published welder specs',
-    itemListElement: [
-      { name: '120 V outlets', path: '/compare/best-for-120v/' },
-      { name: '240 V outlets', path: '/compare/best-for-240v/' },
-      { name: 'Multi-process', path: '/compare/best-multiprocess/' },
-      { name: 'Which welder', path: '/which-welder/' },
-    ].map((item, i) => ({ '@type': 'ListItem', position: i + 1, name: item.name, url: SITE.url + item.path })),
+    name: 'Welder spec pages',
+    itemListElement: models.map((m, i) => ({ '@type': 'ListItem', position: i + 1, name: m.name, url: SITE.url + `/models/${m.slug}/` })),
   },
 ];
-const brandList = brands();
-const shop = models.slice(0, 6);
 ---
 <Base title="Welder specs and which machine fits" description={desc} path="/" nav="home" og="/og/default.png" jsonld={jsonld}>
-  <div class="wrap hero">
-    <div class="hero-grid">
-      <div>
-        <p class="kicker">Manufacturer pages, read 2 November 2026</p>
-        <h1>Which welder fits the <em>outlet</em> and the metal?</h1>
-        <p class="lede">Amp range, duty cycle, input, wire size, weight, and thickness copied from the maker. The job check uses those figures. A missing cell stays missing. Amazon buttons are searches. No prices.</p>
-        <div class="hero-ctas">
-          <a class="btn" href="/which-welder/">Which welder</a>
-          <a class="btn" href="/compare/best-for-120v/">120 V</a>
-          <a class="btn ghost" href="/models/">All models</a>
-        </div>
-        <Byline />
-      </div>
-      <HeroArt />
-    </div>
+  <div class="wrap pagehead">
+    <p class="kicker">Read 2 November 2026 · {models.length} models · {brands().length} brands</p>
+    <h1>Sheet. Outlet. Job.</h1>
+    <p class="lede">Numbers come from the maker. A blank stays blank. The chip is 120V/15A or 240V/50A. A machine that fails that outlet drops off the table.</p>
+    <Byline />
+    <JobForm />
+    <h2>Spec index</h2>
+    <MachineTable rows={models} />
   </div>
-  <section class="wrap">
-    <h2>Start with the outlet</h2>
-    <div class="grid3">
-      <a class="card" href="/compare/best-for-120v/">
-        <p class="kicker">120 V</p>
-        <h3>Published 120 V machines</h3>
-        <p>Models whose sheet names 120 V input, ranked by the mild-steel thickness that sheet prints.</p>
-        <p class="go">Open the list</p>
-      </a>
-      <a class="card" href="/compare/best-for-240v/">
-        <p class="kicker">240 V class</p>
-        <h3>Published 240 V machines</h3>
-        <p>208–240 V and 230 V inputs count as this outlet. 120 V-only machines stay off the list.</p>
-        <p class="go">Open the list</p>
-      </a>
-      <a class="card" href="/compare/best-multiprocess/">
-        <p class="kicker">Three processes or more</p>
-        <h3>Multi-process welders</h3>
-        <p>Only processes the manufacturer names. MIG plus flux-cored is two. A third process puts the machine on the list.</p>
-        <p class="go">Open the list</p>
-      </a>
-    </div>
-    <h2>Comparisons from the same fields</h2>
-    <div class="grid3">
-      <a class="card" href="/compare/millermatic-211-pro-vs-multimatic-215-pro/">
-        <h3>Millermatic 211 PRO vs Multimatic 215 PRO</h3>
-        <p>Same 120/240 V family on Miller’s sheets. The 215 PRO adds DC TIG and stick.</p>
-      </a>
-      <a class="card" href="/compare/handler-210mvp-vs-handler-210i/">
-        <h3>Handler 210MVP vs 210i</h3>
-        <p>Hobart prints a 15 A row and a 20 A row on the 210i. The 210MVP prints a 15 A plug and a 20 A input.</p>
-      </a>
-      <a class="card" href="/compare/power-mig-210-mp-vs-power-mig-215-mpi/">
-        <h3>Power MIG 210 MP vs 215 MPi</h3>
-        <p>Two Lincoln multi-process sheets. Duty cycle and weight are where the published numbers split.</p>
-      </a>
-    </div>
-    <h2>Models, with the Amazon search on the page</h2>
-    <div class="grid3">
-      {shop.map((m) => {
-        const link = linkFor(m.slug, m.searchQuery);
-        return (
-          <article class="card">
-            <h3><a href={modelPath(m)}>{m.name}</a></h3>
-            <p class="small">{m.duty.published ? m.duty.text : 'Duty cycle not published.'}</p>
-            <p><a href={link.href} rel={AFFILIATE_REL} target={AFFILIATE_TARGET}>{link.kind === 'product' ? 'View on Amazon' : 'Search Amazon'}</a></p>
-          </article>
-        );
-      })}
-    </div>
-    <p><a href="/models/">All {models.length} models</a></p>
-    <h2>Brands</h2>
-    <div class="grid3">
-      {brandList.map((b) => (
-        <a class="card" href={`/brands/${b.slug}/`}>
-          <h3>{b.name}</h3>
-          <p>{b.count} model{b.count === 1 ? '' : 's'} with a cited spec table.</p>
-        </a>
-      ))}
-    </div>
-  </section>
 </Base>

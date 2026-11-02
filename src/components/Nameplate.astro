@@ -1,0 +1,28 @@
+---
+import type { Model } from '../data/models';
+import { dutyMark, fitTokens, plugLine } from '../lib/plate';
+import DutyBar from './DutyBar.astro';
+interface Props { model: Model }
+const { model: m } = Astro.props;
+const fit = fitTokens(m);
+const d120 = dutyMark(m.duty.text, 120, m.voltages);
+const d240 = dutyMark(m.duty.text, 240, m.voltages);
+const plug = plugLine(m.input.text);
+---
+<section class="nameplate" aria-label={`${m.name} rating plate`}>
+  <div class="np-top">
+    <p class="np-brand">{m.brand}</p>
+    <p class="np-sku">{m.sku ? m.sku : 'NO SKU ON SHEET'}</p>
+  </div>
+  <h2 style="margin:0 0 10px">{m.name}</h2>
+  <div class="np-grid">
+    <div class="np-cell"><span>Output</span><b>{m.output.published ? m.output.text : 'Not published'}</b></div>
+    <div class="np-cell"><span>Duty</span><b>{m.duty.published ? m.duty.text : 'Not published'}</b></div>
+    <div class="np-cell"><span>Input</span><b>{m.input.published ? m.input.text : 'Not published'}</b></div>
+    <div class="np-cell"><span>Plug</span><b>{plug}</b></div>
+  </div>
+  {m.voltages.includes(120) && <DutyBar mark={d120} outlet="120-15" label="10 min cycle, 120V" />}
+  {m.voltages.includes(240) && <DutyBar mark={d240} outlet="240-50" label="10 min cycle, 240V class" />}
+  {!fit.includes('120-15') && <p class="stamp" data-miss="120-15">Does not pass 120V/15A</p>}
+  {!fit.includes('240-50') && <p class="stamp" data-miss="240-50">Does not pass 240V/50A</p>}
+</section>

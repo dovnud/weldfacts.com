@@ -1,10 +1,10 @@
 {
   "name": "WeldFacts.com",
   "short_name": "WeldFacts",
-  "description": "Manufacturer-sourced welder specs and an outlet-and-job check.",
+  "description": "Manufacturer welder specs and an outlet check.",
   "start_url": "/",
   "display": "browser",
-  "background_color": "#f4f1ea",
-  "theme_color": "#1c2430",
+  "background_color": "#121418",
+  "theme_color": "#121418",
   "icons": [{ "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }]
 }

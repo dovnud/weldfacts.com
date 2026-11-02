@@ -6,7 +6,7 @@ import { SITE } from '../lib/site';
 import { crumbLd, webPageLd } from '../lib/ld';
 
 const crumbs = [{ name: 'Privacy', path: '/privacy/' }];
-const desc = `Privacy policy for WeldFacts.com. The site does not run ads or a newsletter. The contact address is ${SITE.email}.`;
+const desc = `Privacy policy for WeldFacts.com. No ads and no newsletter. Contact ${SITE.email}.`;
 const jsonld = [webPageLd('Privacy policy', '/privacy/', desc, SITE.checked), crumbLd(crumbs)];
 ---
 <Base title="Privacy policy" description={desc} path="/privacy/" og="/og/page-privacy.png" jsonld={jsonld}>
@@ -16,12 +16,11 @@ const jsonld = [webPageLd('Privacy policy', '/privacy/', desc, SITE.checked), cr
       <h1>Privacy</h1>
       <Byline />
     </div>
-    <p>WeldFacts.com is a static reference site. Reading a page does not require an account. The which-welder check runs in your browser. The numbers you type are not sent to WeldFacts.</p>
-    <h2>Contact mail</h2>
-    <p>The contact page opens your own email program addressed to {SITE.email}. That page does not receive or store the message.</p>
-    <h2>Cookies and logs</h2>
-    <p>The site does not set an analytics cookie and does not run advertising scripts. Cloudflare, which hosts the site, may keep standard request logs. Amazon’s own site may set cookies if you follow a search link.</p>
-    <h2>Requests</h2>
-    <p>Privacy questions go to <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.</p>
+    <p>Static site. No account. The job check runs in the browser. The numbers you type are not sent here. The outlet chip is stored in localStorage on your machine.</p>
+    <h2>Mail</h2>
+    <p>The contact page opens your mail app to {SITE.email}. This site does not receive the message.</p>
+    <h2>Cookies</h2>
+    <p>No analytics cookie. No ad script. Cloudflare may keep request logs. Amazon may set cookies if you follow a search link.</p>
+    <p><a href={`mailto:${SITE.email}`}>{SITE.email}</a></p>
   </div>
 </Base>

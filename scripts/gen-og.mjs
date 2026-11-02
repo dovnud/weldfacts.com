@@ -27,14 +27,13 @@ function esc(value) {
 function svg(title, sub) {
   return `<?xml version="1.0" encoding="UTF-8"?>
 <svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
-  <rect width="1200" height="630" fill="#1c2430"/>
-  <rect x="0" y="0" width="1200" height="14" fill="#f0b429"/>
-  <text x="72" y="180" fill="#f0b429" font-family="Outfit, Arial, sans-serif" font-size="28" font-weight="700" letter-spacing="4">WELDFACTS.COM</text>
-  <text x="72" y="320" fill="#f7f4ee" font-family="Outfit, Arial, sans-serif" font-size="64" font-weight="700">${esc(title)}</text>
-  <text x="72" y="400" fill="#d9d0c3" font-family="Arial, sans-serif" font-size="32">${esc(sub)}</text>
-  <rect x="72" y="470" width="180" height="14" rx="7" fill="#f0b429"/>
-  <rect x="264" y="470" width="72" height="14" rx="7" fill="#f0b429" opacity="0.7"/>
-  <rect x="348" y="470" width="36" height="14" rx="7" fill="#f0b429" opacity="0.45"/>
+  <rect width="1200" height="630" fill="#121418"/>
+  <rect x="0" y="0" width="1200" height="16" fill="#ff8a1f"/>
+  <text x="72" y="180" fill="#ff8a1f" font-family="Arial Narrow, Arial, sans-serif" font-size="28" font-weight="700" letter-spacing="6">WELDFACTS.COM</text>
+  <text x="72" y="320" fill="#f4f0e8" font-family="Arial Narrow, Arial, sans-serif" font-size="68" font-weight="700">${esc(title)}</text>
+  <text x="72" y="400" fill="#c9c2b6" font-family="Arial, sans-serif" font-size="30">${esc(sub)}</text>
+  <rect x="72" y="480" width="220" height="8" fill="#ff8a1f"/>
+  <rect x="300" y="480" width="80" height="8" fill="#ff8a1f" opacity="0.55"/>
 </svg>`;
 }
 

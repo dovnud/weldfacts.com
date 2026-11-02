@@ -7,19 +7,19 @@ import { SITE } from '../../lib/site';
 import { crumbLd, webPageLd } from '../../lib/ld';
 
 const crumbs = [{ name: 'Compare', path: '/compare/' }];
-const desc = 'Compare two welders on the manufacturer figures only, or open the 120 V, 240 V, and multi-process lists built from those figures.';
+const desc = 'Compare two welders on the manufacturer figures only. 120 V, 240 V, and multi-process lists use those same figures.';
 const jsonld = [webPageLd('Compare welder specs', '/compare/', desc, SITE.checked), crumbLd(crumbs)];
 ---
 <Base title="Compare welder specs" description={desc} path="/compare/" nav="compare" og="/og/page-compare.png" jsonld={jsonld}>
   <div class="wrap">
     <div class="pagehead">
       <Crumbs crumbs={crumbs} />
-      <h1>Compare</h1>
-      <p class="lede">Side-by-side pages repeat each model’s published value and its source. They do not score a winner.</p>
+      <h1>Two sheets</h1>
+      <p class="lede">Same fields, two citations. No score.</p>
       <Byline />
     </div>
     <form class="finder" id="pair-form">
-      <div class="finder-head">Two models <span>Same fields, two citations</span></div>
+      <div class="finder-head">Pair <span>Order follows the model list</span></div>
       <div class="finder-body">
         <div class="f-grid">
           <div>
@@ -31,23 +31,14 @@ const jsonld = [webPageLd('Compare welder specs', '/compare/', desc, SITE.checke
             <select id="b" name="b">{models.map((m, i) => <option value={m.slug} selected={i === 1}>{m.name}</option>)}</select>
           </div>
         </div>
-        <button class="f-btn" type="submit">Open the comparison</button>
+        <button class="f-btn" type="submit">Open</button>
       </div>
     </form>
-    <div class="grid3">
-      <a class="card" href="/compare/best-for-120v/">
-        <h2>120 V</h2>
-        <p>Published 120 V input, then mild-steel thickness.</p>
-      </a>
-      <a class="card" href="/compare/best-for-240v/">
-        <h2>240 V</h2>
-        <p>Published 240 V class input, then mild-steel thickness.</p>
-      </a>
-      <a class="card" href="/compare/best-multiprocess/">
-        <h2>Multi-process</h2>
-        <p>Three or more processes the manufacturer names.</p>
-      </a>
-    </div>
+    <ul class="rule-list">
+      <li><a href="/compare/best-for-120v/">120 V list</a></li>
+      <li><a href="/compare/best-for-240v/">240 V list</a></li>
+      <li><a href="/compare/best-multiprocess/">Multi-process list</a></li>
+    </ul>
   </div>
 </Base>
 <script>

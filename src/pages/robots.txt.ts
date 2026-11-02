@@ -1,7 +1,7 @@
 const bots = ['OAI-SearchBot', 'ChatGPT-User', 'GPTBot', 'Claude-SearchBot', 'Claude-User', 'ClaudeBot', 'PerplexityBot', 'Google-Extended', 'Applebot-Extended', 'Claude-Web', 'anthropic-ai', 'Perplexity-User', 'CCBot', 'Bytespider', 'Amazonbot', 'Meta-ExternalAgent', 'cohere-ai', 'DuckAssistBot', 'MistralAI-User'];
 export const GET = () => {
   const body = [
-    '# WeldFacts.com — crawlers, including AI search and assistants, may read the site.',
+    '# WeldFacts.com. Crawlers, including AI search and assistants, may read the site.',
     '',
     'User-agent: *',
     'Allow: /',

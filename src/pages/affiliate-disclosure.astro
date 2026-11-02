@@ -7,7 +7,7 @@ import { SITE } from '../lib/site';
 import { crumbLd, webPageLd } from '../lib/ld';
 
 const crumbs = [{ name: 'Affiliate disclosure', path: '/affiliate-disclosure/' }];
-const desc = 'Amazon Associates disclosure for WeldFacts.com. Links use tag weldfacts-20. Direct product links are only for ASINs checked on a live Amazon page. No prices are shown.';
+const desc = 'Amazon Associates disclosure for WeldFacts.com. Links use tag weldfacts-20. Direct product links require a checked Amazon title. No prices.';
 const jsonld = [webPageLd('Affiliate disclosure', '/affiliate-disclosure/', desc, SITE.checked), crumbLd(crumbs)];
 const verified = Object.keys(ASINS).length;
 ---
@@ -19,9 +19,8 @@ const verified = Object.keys(ASINS).length;
       <Byline />
     </div>
     <p>{AMAZON_DISCLOSURE}</p>
-    <p>WeldFacts.com participates in the Amazon Associates Program. Amazon is the only affiliate program on this site. There is no advertising network on these pages. Every Amazon link is built in one configuration file. The tag is <span class="mono">{AMAZON_TAG}</span>.</p>
-    <p>A <span class="mono">/dp/</span> link is used only after that Amazon product page has been opened and the title names that one model. {verified === 0 ? 'No model has passed that check in this version, so every button is a tagged search.' : `${verified} models use a direct link. The others are searches.`}</p>
-    <p>We do not show prices.</p>
-    <p>Editorial rows are filled before a shopping link is added, and a missing spec is not filled in because a retailer page mentions one.</p>
+    <p>Amazon is the only affiliate program here. No ad network. Every Amazon link is built in one file. Tag <span class="mono">{AMAZON_TAG}</span>.</p>
+    <p>{verified === 0 ? 'No live Amazon title has been checked. Every button is a tagged search.' : `${verified} models use a direct link. The rest are searches.`}</p>
+    <p>No prices. A missing spec is not filled from a retailer page.</p>
   </div>
 </Base>

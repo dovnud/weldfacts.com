@@ -17,9 +17,9 @@
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
-    "@fontsource/figtree": "^5.2.10",
+    "@fontsource/barlow": "^5.2.8",
+    "@fontsource/barlow-condensed": "^5.2.8",
     "@fontsource/ibm-plex-mono": "^5.2.7",
-    "@fontsource/outfit": "^5.2.8",
     "astro": "^5.18.2"
   },
   "devDependencies": {
