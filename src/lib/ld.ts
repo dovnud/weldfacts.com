@@ -1,4 +1,4 @@
-import { SITE } from './site';
+import { SITE } from './site.ts';
 
 export function ldEscape(data: unknown): string {
   return JSON.stringify(data).replace(/</g, '\\u003c');

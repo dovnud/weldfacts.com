@@ -8,12 +8,13 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "prebuild": "node --experimental-strip-types scripts/check-specs.mjs && node --experimental-strip-types scripts/gen-og.mjs",
+    "prebuild": "node --experimental-strip-types scripts/check-specs.mjs && node --experimental-strip-types scripts/schema.test.mjs && node --experimental-strip-types scripts/gen-og.mjs",
     "build": "astro build && node scripts/check-words.mjs",
+    "postbuild": "node --experimental-strip-types scripts/schema.test.mjs --dist",
     "preview": "astro preview",
     "og": "node --experimental-strip-types scripts/gen-og.mjs",
     "indexnow": "node scripts/indexnow.mjs",
-    "test": "node --experimental-strip-types scripts/job.test.mjs"
+    "test": "node --experimental-strip-types scripts/job.test.mjs && node --experimental-strip-types scripts/schema.test.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",

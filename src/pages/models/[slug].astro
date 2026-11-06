@@ -7,10 +7,9 @@ import Blocks from '../../components/Blocks.astro';
 import Nameplate from '../../components/Nameplate.astro';
 import { modelPath, pairs } from '../../data/models';
 import { models } from '../../data/models';
-import { modelBlocks, modelFaqs } from '../../lib/guide';
-import { productLd, specRows } from '../../lib/modelView';
+import { modelBlocks } from '../../lib/guide';
+import { modelPageLd, specRows } from '../../lib/modelView';
 import { SITE } from '../../lib/site';
-import { crumbLd, webPageLd } from '../../lib/ld';
 
 export function getStaticPaths() {
   return models.map((m) => ({ params: { slug: m.slug }, props: { model: m } }));
@@ -20,14 +19,8 @@ const path = modelPath(m);
 const crumbs = [{ name: 'Models', path: '/models/' }, { name: m.name, path }];
 const desc = m.summary;
 const blocks = modelBlocks(m);
-const faqs = modelFaqs(m);
 const related = pairs().filter((p) => p.a.slug === m.slug || p.b.slug === m.slug);
-const jsonld = [
-  webPageLd(`${m.name} specs`, path, desc, SITE.checked),
-  crumbLd(crumbs),
-  productLd(m),
-  { '@type': 'FAQPage', mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) },
-];
+const jsonld = modelPageLd(m, SITE.checked);
 const rows = specRows(m);
 ---
 <Base title={`${m.name} specs`} description={desc} path={path} nav="models" og={`/og/model-${m.slug}.png`} ogAlt={`${m.name} specs`} jsonld={jsonld}>
