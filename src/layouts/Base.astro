@@ -40,6 +40,14 @@ const ld = graph(jsonld);
         document.documentElement.dataset.outlet = '120-15';
       }
     </script>
+    <!-- Google tag (gtag.js) -->
+    <script async is:inline src="https://www.googletagmanager.com/gtag/js?id=G-5XTGXBYQ56"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-5XTGXBYQ56');
+    </script>
     <title>{fullTitle}</title>
     <meta name="description" content={metaDesc} />
     <link rel="canonical" href={canonical} />
