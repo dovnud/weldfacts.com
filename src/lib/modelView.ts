@@ -1,6 +1,7 @@
 import { modelPath, type Model } from '../data/models.ts';
 import { modelFaqs } from './guide.ts';
 import { crumbLd, webPageLd } from './ld.ts';
+import { modelHeading } from './seo.ts';
 
 export function specRows(m: Model) {
   return [
@@ -28,7 +29,7 @@ export function modelPageLd(m: Model, checked: string) {
     { name: m.name, path },
   ];
   return [
-    webPageLd(`${m.name} specs`, path, m.summary, checked),
+    webPageLd(modelHeading(m.brand, m.name), path, m.summary, checked),
     crumbLd(crumbs),
     {
       '@type': 'FAQPage',

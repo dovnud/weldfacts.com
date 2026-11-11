@@ -72,14 +72,14 @@ export function dutyMark(text: string, voltage: Volt, voltages: Volt[]): DutyMar
   return null;
 }
 
-export function plugLine(input: string): string {
-  if (!input || input.startsWith('Not published')) return 'Plug not printed';
+/** A plug name only when the cited input line prints one. */
+export function plugLine(input: string): string | null {
+  if (!input || input.startsWith('Not published')) return null;
   const nema = input.match(/NEMA\s*[0-9]{1,2}-[0-9]{1,2}P?/i);
   if (nema) return nema[0].replace(/\s+/g, ' ');
   const mvp = input.match(/\d-\d+P(?:\s*\([^)]+\))?/g);
   if (mvp && mvp.length) return mvp.join(', ');
-  if (/plug/i.test(input)) return 'Plug named, type not printed';
-  return 'Plug not printed';
+  return null;
 }
 
 export const PROC_LABEL: Record<string, string> = {

@@ -1,4 +1,4 @@
-const BRAND = 'WeldFacts.com';
+const BRAND = 'WeldFacts';
 const SEP = ' | ';
 
 function htmlLen(input: string): number {
@@ -13,6 +13,11 @@ function shorten(input: string, maxHtml: number): string {
     cut = cut.slice(0, space);
   }
   return cut.replace(/[\s,;:|·—–&-]+$/u, '').trim();
+}
+
+export function modelHeading(brand: string, name: string): string {
+  const already = name.toLowerCase().startsWith(`${brand.toLowerCase()} `) || name.toLowerCase() === brand.toLowerCase();
+  return `${already ? name : `${brand} ${name}`} welder specs`;
 }
 
 export function serpTitle(input: string): string {

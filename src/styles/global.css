@@ -224,5 +224,53 @@ footer.site a:hover { color: var(--ink); }
 @media (max-width: 560px) {
   .f-grid, .np-grid, .foot-in, .pair-groups { grid-template-columns: 1fr; }
   .check-row { grid-template-columns: 1fr; }
+  html, body { overflow-x: clip; }
+  .wrap, .tblwrap, .nameplate, .np-grid, .np-cell { max-width: 100%; min-width: 0; }
+  .np-cell b { overflow-wrap: anywhere; }
+  .tblwrap { overflow-x: auto; }
+  a,
+  .chips button,
+  nav.main a,
+  th button,
+  .btn,
+  button.primary,
+  .f-btn,
+  input,
+  select,
+  textarea,
+  summary {
+    min-height: 44px;
+    min-width: 44px;
+    box-sizing: border-box;
+  }
+  a,
+  .chips button,
+  nav.main a,
+  th button,
+  .btn,
+  button.primary,
+  .f-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 12px;
+  }
+  .brand {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 44px;
+    padding: 8px 0;
+  }
+  .skip { padding: 12px 14px; }
+  th button { width: 100%; justify-content: flex-start; }
+  table.specs { min-width: 0; width: 100%; }
+  table.specs thead { display: none; }
+  table.specs tr,
+  table.specs th,
+  table.specs td { display: block; width: 100%; min-width: 0; }
+  table.specs tr { border-bottom: 1px solid var(--line); padding: 4px 0 8px; }
+  table.specs th[scope='row'] { border-bottom: 0; padding-bottom: 0; background: transparent; }
+  table.specs td { border-bottom: 0; }
 }
 :focus-visible { outline: 2px solid var(--hot); outline-offset: 2px; }

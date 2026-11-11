@@ -1,19 +1,33 @@
 ---
 import type { Field } from '../data/models';
 interface Row { label: string; field: Field }
-interface Props { rows: Row[] }
-const { rows } = Astro.props;
+interface Props { rows: Row[]; alsoMissing?: string[] }
+const { rows, alsoMissing = [] } = Astro.props;
+const short: Record<string, string> = {
+  Process: 'process',
+  'Output amp range': 'output amp range',
+  'Rated duty cycle': 'duty cycle',
+  'Input voltage and plug': 'input',
+  'Wire or rod size': 'wire or rod size',
+  Weight: 'weight',
+  'Material thickness': 'material thickness',
+};
+const published = rows.filter((row) => row.field.published);
+const missing = [
+  ...rows.filter((row) => !row.field.published).map((row) => short[row.label] ?? row.label.toLowerCase()),
+  ...alsoMissing,
+];
 ---
 <div class="tblwrap">
-  <table>
+  <table class="specs">
     <thead>
       <tr><th>Spec</th><th>Published value</th><th>Source</th></tr>
     </thead>
     <tbody>
-      {rows.map((row) => (
+      {published.map((row) => (
         <tr>
           <th scope="row">{row.label}</th>
-          <td class={row.field.published ? undefined : 'unpub'}>{row.field.text}</td>
+          <td>{row.field.text}</td>
           <td class="small">
             <a href={row.field.cite.url} rel="noopener">{row.field.cite.where}</a>
           </td>
@@ -22,3 +36,6 @@ const { rows } = Astro.props;
     </tbody>
   </table>
 </div>
+{missing.length > 0 && (
+  <p class="small muted">Not in the manufacturer's sheet: {missing.join(', ')}.</p>
+)}

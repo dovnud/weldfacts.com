@@ -10,6 +10,8 @@ import { models } from '../../data/models';
 import { modelBlocks } from '../../lib/guide';
 import { modelPageLd, specRows } from '../../lib/modelView';
 import { SITE } from '../../lib/site';
+import { modelHeading } from '../../lib/seo';
+import { plugLine } from '../../lib/plate';
 
 export function getStaticPaths() {
   return models.map((m) => ({ params: { slug: m.slug }, props: { model: m } }));
@@ -22,12 +24,14 @@ const blocks = modelBlocks(m);
 const related = pairs().filter((p) => p.a.slug === m.slug || p.b.slug === m.slug);
 const jsonld = modelPageLd(m, SITE.checked);
 const rows = specRows(m);
+const heading = modelHeading(m.brand, m.name);
+const plug = plugLine(m.input.text);
 ---
-<Base title={`${m.name} specs`} description={desc} path={path} nav="models" og={`/og/model-${m.slug}.png`} ogAlt={`${m.name} specs`} jsonld={jsonld}>
+<Base title={heading} description={`${heading}. ${desc}`} path={path} nav="models" og={`/og/model-${m.slug}.png`} ogAlt={heading} jsonld={jsonld}>
   <div class="wrap">
     <div class="pagehead">
       <Crumbs crumbs={crumbs} />
-      <h1>{m.name}</h1>
+      <h1>{heading}</h1>
       <p class="lede">{m.summary}</p>
       <p class="small muted">{m.brand}{m.sku ? `, SKU ${m.sku}` : ''}. <a href={`/brands/${m.brandSlug}/`}>{m.brand} lineup</a></p>
     </div>
@@ -36,7 +40,7 @@ const rows = specRows(m);
     <Blocks blocks={blocks} />
     <h2>Specifications</h2>
     <p class="small">Each cell is the wording from the cited page.</p>
-    <SpecTable rows={rows} />
+    <SpecTable rows={rows} alsoMissing={plug || !m.input.published ? [] : ['plug']} />
     <p>
       <a href={m.productUrl} rel="noopener">Manufacturer page</a>
       · <a href={`/which-welder/?model=${m.slug}`}>Job check</a>
