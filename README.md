@@ -15,15 +15,15 @@ npm run build
 
 ## Cloudflare Pages
 
-Connect this Git repository. Production branch: `main`.
+**This project is DIRECT-UPLOAD ONLY. It has no git source (confirmed via the Pages API, 2026-11-11): pushes to this repo NEVER deploy.** Every change ships by building locally and uploading `dist` with Wrangler (see "Deploy with Wrangler" below). Repo commits are source control only.
 
-- Build command: `npm run build`
+- Build command: `npm run build` (run locally; all gates must pass)
 - Build output: `dist` (`pages_build_output_dir` in `wrangler.jsonc`)
-- Environment variable: `NODE_VERSION` = `22`
+- Node: `22` or newer (the prebuild uses `--experimental-strip-types`)
 - Project name: `weldfacts`
 - Custom domains: `weldfacts.com` and `www.weldfacts.com`
 
-There is no AdSense tag and no subscriber database.
+The AdSense loader (pub-1450356163101033) and `public/ads.txt` are part of the build since 2026-11-11. There is no subscriber database.
 
 ### Amazon Associates
 
